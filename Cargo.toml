@@ -1,0 +1,18 @@
+[package]
+name = "ctftool"
+version = "0.1.0"
+authors = ["mephi42 <mephi42@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0.25"
+clap = { git = "https://github.com/clap-rs/clap" }
+serde = { version = "1.0.104", features = ["derive"] }
+serde_yaml = "0.8.11"
+
+[dev-dependencies]
+tempdir = "0.3.7"
+
+[[bin]]
+name = "ctf"
+path = "src/main.rs"
