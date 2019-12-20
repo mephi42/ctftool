@@ -13,29 +13,20 @@ use crate::subprocess::check_call;
 #[derive(Clap)]
 pub struct Init {}
 
-pub fn run(_init: &Init) -> Result<()> {
+pub fn run(_init: Init) -> Result<()> {
     let ctf = CTF {
         name: Path::file_name(&current_dir()?)
             .and_then({ |x| x.to_str() })
             .ok_or_else({ || anyhow!("Could not obtain the name of the current directory") })?
             .into(),
+        remotes: vec![],
     };
     check_call(Command::new("git").args(&["init"]))?;
-    if !Command::new("git")
-        .args(&["config", "user.name"])
-        .spawn()?
-        .wait()?
-        .success()
-    {
-        check_call(Command::new("git").args(&["config", "user.name", "ctf"]))?;
+    if git::get_option("user.name")?.is_none() {
+        git::set_option("user.name", "ctf")?;
     }
-    if !Command::new("git")
-        .args(&["config", "user.email"])
-        .spawn()?
-        .wait()?
-        .success()
-    {
-        check_call(Command::new("git").args(&["config", "user.email", "ctf@localhost"]))?;
+    if git::get_option("user.email")?.is_none() {
+        git::set_option("user.email", "ctf@localhost")?;
     }
     git::commit(&ctf, "Initial commit")?;
     Ok(())
