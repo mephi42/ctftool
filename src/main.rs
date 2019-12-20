@@ -20,11 +20,16 @@ enum SubCommand {
     /// Initializes a git repository for a single CTF
     #[clap(name = "init")]
     Init(commands::init::Init),
+
+    /// Manages links to CTF websites
+    #[clap(name = "remote")]
+    Remote(commands::remote::Remote),
 }
 
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
     match opts.subcmd {
-        SubCommand::Init(init) => commands::init::run(&init),
+        SubCommand::Init(init) => commands::init::run(init),
+        SubCommand::Remote(remote) => commands::remote::run(remote),
     }
 }

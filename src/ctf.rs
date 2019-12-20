@@ -7,6 +7,20 @@ use serde_yaml;
 #[derive(Serialize, Deserialize)]
 pub struct CTF {
     pub name: String,
+    pub remotes: Vec<Remote>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Remote {
+    pub name: String,
+    pub url: String,
+}
+
+pub fn load() -> Result<CTF> {
+    let bytes = fs::read(".ctf")?;
+    let str = &String::from_utf8(bytes)?;
+    let ctf = serde_yaml::from_str(str)?;
+    Ok(ctf)
 }
 
 pub fn store(ctf: &CTF) -> Result<()> {
