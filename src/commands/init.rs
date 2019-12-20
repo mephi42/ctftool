@@ -20,6 +20,7 @@ pub fn run(_init: Init) -> Result<()> {
             .ok_or_else({ || anyhow!("Could not obtain the name of the current directory") })?
             .into(),
         remotes: vec![],
+        challenges: vec![],
     };
     check_call(Command::new("git").args(&["init"]))?;
     if git::get_option("user.name")?.is_none() {

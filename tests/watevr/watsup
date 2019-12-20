@@ -1,0 +1,1891 @@
+{
+  "start_time": 1576263600,
+  "end_time": 1576436400,
+  "authors": [
+    {
+      "name": "QMechanic",
+      "link": "example.com",
+      "icon": "example.com"
+    },
+    {
+      "name": "nnewram",
+      "link": "example.com",
+      "icon": "example.com"
+    },
+    {
+      "name": "loovjo",
+      "link": "example.com",
+      "icon": "example.com"
+    },
+    {
+      "name": "daydun",
+      "link": "example.com",
+      "icon": "example.com"
+    },
+    {
+      "name": "mateuszdrwal",
+      "link": "example.com",
+      "icon": "example.com"
+    },
+    {
+      "name": "loke",
+      "link": "example.com",
+      "icon": "example.com"
+    }
+  ],
+  "announcements": [
+    {
+      "title": "The ctf has started!",
+      "description": "The ctf has now started, play fair and have fun!",
+      "time": 1576263708
+    },
+    {
+      "title": "Platform issue update",
+      "description": "If you are having issues viewing challenges, try disabling your adblocker, we are working on the issue",
+      "time": 1576264941
+    },
+    {
+      "title": "Missing files in Danish Blockchain",
+      "description": "The challenge Danish Blockchain is missing its download files. They will be added in a few minutes",
+      "time": 1576269964
+    },
+    {
+      "title": "Web challenge issues",
+      "description": "As you may have noticed, many of the website based challenges are not stable. Please try refreshing your DNS cache, as we have turned on cloudflare proxy to help mitigate the traffic. Also, if you are generating any excessive traffic to the challenge servers (through for example brute forcing directories) note that the challenges are designed so that this will not get you the flag. You are just ruining the experience for everyone else by overloading the servers.",
+      "time": 1576270253
+    },
+    {
+      "title": "Web issues mostly resolved",
+      "description": "We have now updated urls of web challenges to bare IPs, which seem to work much better. Most web challenges should now be reachable (except for htjp, still working on that). You will need to refresh the  page to see the new urls.",
+      "time": 1576273252
+    },
+    {
+      "title": "Danish Blockchain files added",
+      "description": "Files for the Danish Blockchain challenge are now available, sorry about that!",
+      "time": 1576274413
+    },
+    {
+      "title": "Now announcing free vodka!",
+      "description": "new challenge hacking for vodka, watch out hfs ;)",
+      "time": 1576278037
+    },
+    {
+      "title": "New challenges",
+      "description": "2 new crypto challenges have now been added, for real this time :P",
+      "time": 1576279592
+    },
+    {
+      "title": "New challenge",
+      "description": "New reversing challenge",
+      "time": 1576292711
+    },
+    {
+      "title": "Submition issue",
+      "description": "There was a submition issue for Swedish RSA and baby RLWE, it is now fixed",
+      "time": 1576306383
+    },
+    {
+      "title": "New challenge",
+      "description": "Added new misc challenge, Ancient Script",
+      "time": 1576306971
+    },
+    {
+      "title": "New challenge",
+      "description": "Super Calculator has been released. Go calculate some stuff!",
+      "time": 1576321385
+    },
+    {
+      "title": "New challenge",
+      "description": "sabataD has now been released",
+      "time": 1576335625
+    },
+    {
+      "title": "The jungle hint released",
+      "description": "The jungle has now been updated to have a signed cookie instead of an encrypted cookie. This means you are able to see the cookie data.",
+      "time": 1576337195
+    },
+    {
+      "title": "NewPwd hint released",
+      "description": "Take a look at the source when you enter the wrong admin password",
+      "time": 1576338748
+    },
+    {
+      "title": "Surprise new challenge",
+      "description": "Pickle Store has now been released. Go buy some pickles!",
+      "time": 1576348982
+    },
+    {
+      "title": "New challenge",
+      "description": "Did you think brainfuck was a Hjärnknull? Well get ready for our last challenge!",
+      "time": 1576350607
+    },
+    {
+      "title": "NewPwd update",
+      "description": "There was a bug in NewPwd leading to an unintended solution. Since nobody has solved this challenge yet, this bug has been fixed. Behaviour may be slightly different now.",
+      "time": 1576353505
+    },
+    {
+      "title": "Another the jungle hint",
+      "description": "Sometimes to achive success you need to choose your own path",
+      "time": 1576354435
+    },
+    {
+      "title": "The jungle clarification",
+      "description": "Some of you have been asking about brute forcing regarding the last hint. The only paths the webserver recognizes are /, /lost, /temple, /flag and /path/<int>, where int is an integer between 1-50. All other paths will return 404, so there is no point in brute forcing them. (clarification clarification: /path/<int> actually still returns 302 for all paths above 50, but they are not relevant to the challenge)",
+      "time": 1576362652
+    },
+    {
+      "title": "The jungle server error",
+      "description": "There seems to be problem with connectivity to The jungle. This is not intended, issue will be fixed when reposnible author wakes up. Sorry about this.",
+      "time": 1576398299
+    },
+    {
+      "title": "The jungle is back",
+      "description": "The jungle web service is back up!",
+      "time": 1576403647
+    },
+    {
+      "title": "SuperSandbox is now back up",
+      "description": "Note that the IP to SuperSandbox has changed because we had to restart the whole ec2 instance.",
+      "time": 1576411616
+    },
+    {
+      "title": "Feedback form and after CTF stream",
+      "description": "There are around 40 minutes left of the competition. Meanwhile, we have created a feedback form that you can answer now or after the competition. We would really appreciate it! https://forms.gle/3y4Rpiw8E9q7PSHd8 We would also like to announce that we will be hosting a livestream to go over a few of the challenges after the competition. We will announce more info about this soon.",
+      "time": 1576434006
+    },
+    {
+      "title": "The CTF is now over!",
+      "description": "The CTF is now over! Congratulations to Perfect blue, HackingForSoju and zer0pts for comming first, second and third place respectively!  We will announce the prize winners later when we have verified all teams eligibility. If you want to see solutions for some of the challenges and ask questions to the attending authors, you can check out our janky stream at https://www.twitch.tv/mateuszdrwal, starting relatively soon hopefully",
+      "time": 1576436546
+    }
+  ],
+  "challenges": [
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "loovjo"
+      ],
+      "id": 5,
+      "unlocked_by": null,
+      "unsolved_rating_count": 4,
+      "unsolved_rating_sum": 6,
+      "solved_rating_count": 20,
+      "solved_rating_sum": 77,
+      "solves": 106,
+      "top_solved_teams": [
+        {
+          "id": 5,
+          "name": "LionHack",
+          "time": 1576264513,
+          "tries": 1
+        },
+        {
+          "id": 266,
+          "name": "AugustaHackersAnonymous",
+          "time": 1576268327,
+          "tries": 1
+        },
+        {
+          "id": 172,
+          "name": "NaN-i",
+          "time": 1576273722,
+          "tries": 1
+        }
+      ],
+      "description": "The Swedish State Archive are working on their new site, but it's not quite finished yet...",
+      "website_urls": [
+        "http://13.53.175.227:50000/"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Swedish State Archive",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 11,
+      "unlocked_by": null,
+      "unsolved_rating_count": 12,
+      "unsolved_rating_sum": 19,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 10,
+      "solves": 6,
+      "top_solved_teams": [
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576324276,
+          "tries": 1
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576367077,
+          "tries": 1
+        },
+        {
+          "id": 494,
+          "name": "OpenToAll",
+          "time": 1576376400,
+          "tries": 1
+        }
+      ],
+      "description": "I heard there was a temple with some sweet l00t in this jungle. Let's just hope i won't get eaten by tigers on the way.",
+      "website_urls": [
+        "http://13.53.91.128:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "The Jungle",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 13,
+      "unlocked_by": 18,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 0,
+      "solved_rating_sum": 0,
+      "solves": 83,
+      "top_solved_teams": [
+        {
+          "id": 346,
+          "name": "pwndevils",
+          "time": 1576266080,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576267253,
+          "tries": 2
+        },
+        {
+          "id": 157,
+          "name": "IndianTuesday",
+          "time": 1576267405,
+          "tries": 1
+        }
+      ],
+      "title": "Voting Machine 2",
+      "status": 1
+    },
+    {
+      "categories": [
+        "pwn"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 14,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 1,
+      "solved_rating_count": 4,
+      "solved_rating_sum": 8,
+      "solves": 25,
+      "top_solved_teams": [
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576274991,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576280501,
+          "tries": 1
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576286283,
+          "tries": 1
+        }
+      ],
+      "description": "The success of sabataD was so great that we implemented an even better and even more secure system! Wat-sql offers secure write and read access!",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.53.39.99:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/79232b0d04e9af1d1d73348e48b2d25a/wat-sql"
+      ],
+      "follows_flag_format": true,
+      "title": "Wat-sql",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn",
+        "beginner"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 17,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 1,
+      "solved_rating_count": 10,
+      "solved_rating_sum": 25,
+      "solves": 33,
+      "top_solved_teams": [
+        {
+          "id": 386,
+          "name": "SperantaTgJiu",
+          "time": 1576265202,
+          "tries": 1
+        },
+        {
+          "id": 504,
+          "name": "Mstuca",
+          "time": 1576267891,
+          "tries": 1
+        },
+        {
+          "id": 398,
+          "name": "▖▗▘▙▚▛▜▞▟",
+          "time": 1576273681,
+          "tries": 1
+        }
+      ],
+      "description": "You got assigned as mcDonald's *national* security expert, hence, you are now the richest mcDdonald's employee in the world! Of course, you want it to stay that way! The only problem is that, after all the pwning at mcDonald's, your thirst has grown to an uncontrollable amount. You need that club mate but you can't loose money in the process!",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.178.241:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/c1d38aa049a522bbec3759f842a79350/Club_Mate"
+      ],
+      "follows_flag_format": true,
+      "title": "Club Mate",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn",
+        "beginner"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 18,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 5,
+      "solved_rating_count": 16,
+      "solved_rating_sum": 58,
+      "solves": 241,
+      "top_solved_teams": [
+        {
+          "id": 504,
+          "name": "Mstuca",
+          "time": 1576264149,
+          "tries": 1
+        },
+        {
+          "id": 157,
+          "name": "IndianTuesday",
+          "time": 1576264267,
+          "tries": 1
+        },
+        {
+          "id": 684,
+          "name": "Red Cadets",
+          "time": 1576264444,
+          "tries": 1
+        }
+      ],
+      "description": "In a world with many uncertainties we need some kind of structure. Democracy is a big part of that, therefore we need voting machines! Well, at least if they are safe...",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.67.196:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/99d7f36824aa712cfbbe9a4e4bcf91ff/kamikaze"
+      ],
+      "follows_flag_format": true,
+      "title": "Voting Machine 1",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn",
+        "reverse"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 19,
+      "unlocked_by": null,
+      "unsolved_rating_count": 2,
+      "unsolved_rating_sum": 2,
+      "solved_rating_count": 4,
+      "solved_rating_sum": 7,
+      "solves": 9,
+      "top_solved_teams": [
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576268174,
+          "tries": 1
+        },
+        {
+          "id": 486,
+          "name": "zer0pts",
+          "time": 1576306431,
+          "tries": 1
+        },
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576327034,
+          "tries": 1
+        }
+      ],
+      "description": "Spotify is sooo hard to use, so i decided to make a super secure api for it!",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.149.167:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/c76bb392f072115ed3fbd2d1afa141ff/spottify"
+      ],
+      "follows_flag_format": true,
+      "title": "Spott-i-fy",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 8,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 1,
+      "solved_rating_count": 1,
+      "solved_rating_sum": 5,
+      "solves": 1,
+      "top_solved_teams": [
+        {
+          "id": 45,
+          "name": "FrenchRoomba",
+          "time": 1576394452,
+          "tries": 2
+        }
+      ],
+      "description": "Logging in has never been more secure with our new, revolutionary log-in method!",
+      "website_urls": [
+        "http://13.48.148.114:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "NewPwd",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web",
+        "beginner"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 12,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 3,
+      "solved_rating_count": 44,
+      "solved_rating_sum": 174,
+      "solves": 539,
+      "top_solved_teams": [
+        {
+          "id": 705,
+          "name": "KTHCTF0x1",
+          "time": 1576263868,
+          "tries": 1
+        },
+        {
+          "id": 180,
+          "name": "exztase",
+          "time": 1576263878,
+          "tries": 1
+        },
+        {
+          "id": 304,
+          "name": "Swedish Scammers",
+          "time": 1576263916,
+          "tries": 1
+        }
+      ],
+      "description": "Welcome to my cookie store!",
+      "website_urls": [
+        "http://13.48.71.231:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Cookie Store",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "mateuszdrwal",
+        "daydun"
+      ],
+      "id": 9,
+      "unlocked_by": null,
+      "unsolved_rating_count": 6,
+      "unsolved_rating_sum": 12,
+      "solved_rating_count": 4,
+      "solved_rating_sum": 15,
+      "solves": 18,
+      "top_solved_teams": [
+        {
+          "id": 494,
+          "name": "OpenToAll",
+          "time": 1576289621,
+          "tries": 1
+        },
+        {
+          "id": 69,
+          "name": "Defenit",
+          "time": 1576310784,
+          "tries": 1
+        },
+        {
+          "id": 706,
+          "name": "ThreatLevelMidnight",
+          "time": 1576316287,
+          "tries": 1
+        }
+      ],
+      "description": "Wasn't this supposed to be a joke?\nYou should go take a look at <code>/i_store_my_flag_inside_this_file.txt</code>\n\nNote: Because of an oversight in the specification, Content-Length is required.\nAlso, the link below should be htjp:// instead of http://, sorry about that.",
+      "website_urls": [
+        "http://13.53.150.215:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "HTJP",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 7,
+      "unlocked_by": null,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 3,
+      "solved_rating_sum": 15,
+      "solves": 3,
+      "top_solved_teams": [
+        {
+          "id": 266,
+          "name": "AugustaHackersAnonymous",
+          "time": 1576353375,
+          "tries": 2
+        },
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576368050,
+          "tries": 1
+        },
+        {
+          "id": 673,
+          "name": "MATE",
+          "time": 1576410446,
+          "tries": 1
+        }
+      ],
+      "description": "The classic calcpylator is back!",
+      "website_urls": [
+        "http://13.48.13.60:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Super Calculator",
+      "status": 0
+    },
+    {
+      "categories": [
+        "crypto"
+      ],
+      "authors": [
+        "QMechanic",
+        "nnewram"
+      ],
+      "id": 2,
+      "unlocked_by": null,
+      "unsolved_rating_count": 4,
+      "unsolved_rating_sum": 8,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 9,
+      "solves": 25,
+      "top_solved_teams": [
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576282505,
+          "tries": 4
+        },
+        {
+          "id": 695,
+          "name": "RareInputs",
+          "time": 1576282799,
+          "tries": 2
+        },
+        {
+          "id": 797,
+          "name": "m1sc",
+          "time": 1576283401,
+          "tries": 1
+        }
+      ],
+      "description": "Also known as Polynomial RSA.\nThis is just some abstract algebra for fun!",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/b4b63ecd788d27e41b63522854856bc0/polynomial_rsa.sage",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/b4b63ecd788d27e41b63522854856bc0/polynomial_rsa.txt"
+      ],
+      "follows_flag_format": true,
+      "title": "Swedish RSA",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web",
+        "reverse"
+      ],
+      "authors": [
+        "daydun"
+      ],
+      "id": 6,
+      "unlocked_by": null,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 9,
+      "solves": 2,
+      "top_solved_teams": [
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576294513,
+          "tries": 1
+        },
+        {
+          "id": 486,
+          "name": "zer0pts",
+          "time": 1576343660,
+          "tries": 1
+        }
+      ],
+      "description": "I've joined this community for my favorite game, you should check it out!",
+      "website_urls": [
+        "http://13.48.48.235:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Meltdown",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "daydun"
+      ],
+      "id": 10,
+      "unlocked_by": null,
+      "unsolved_rating_count": 4,
+      "unsolved_rating_sum": 7,
+      "solved_rating_count": 13,
+      "solved_rating_sum": 65,
+      "solves": 41,
+      "top_solved_teams": [
+        {
+          "id": 4,
+          "name": "Team Ebalo",
+          "time": 1576264004,
+          "tries": 1
+        },
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576272906,
+          "tries": 1
+        },
+        {
+          "id": 69,
+          "name": "Defenit",
+          "time": 1576273420,
+          "tries": 1
+        }
+      ],
+      "description": "This has to be safe, right?",
+      "website_urls": [
+        "http://13.48.1.199:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "SuperSandbox",
+      "status": 0
+    },
+    {
+      "categories": [
+        "misc",
+        "beginner"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 32,
+      "unlocked_by": null,
+      "unsolved_rating_count": 9,
+      "unsolved_rating_sum": 13,
+      "solved_rating_count": 19,
+      "solved_rating_sum": 53,
+      "solves": 167,
+      "top_solved_teams": [
+        {
+          "id": 695,
+          "name": "RareInputs",
+          "time": 1576264623,
+          "tries": 1
+        },
+        {
+          "id": 737,
+          "name": "SDHackers",
+          "time": 1576265836,
+          "tries": 1
+        },
+        {
+          "id": 670,
+          "name": "PelarianCP",
+          "time": 1576266228,
+          "tries": 2
+        }
+      ],
+      "description": "I think the author of this episode's script had a stroke or something... Or maybe it's just me?",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/72d1c924a0f7e0f945602a0d96a85b5f/chall.txt"
+      ],
+      "follows_flag_format": true,
+      "title": "Unspaellablle",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse",
+        "crypto"
+      ],
+      "authors": [
+        "loovjo"
+      ],
+      "id": 24,
+      "unlocked_by": null,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 1,
+      "solved_rating_sum": 5,
+      "solves": 9,
+      "top_solved_teams": [
+        {
+          "id": 695,
+          "name": "RareInputs",
+          "time": 1576278043,
+          "tries": 1
+        },
+        {
+          "id": 743,
+          "name": "Bushwhackers",
+          "time": 1576280156,
+          "tries": 1
+        },
+        {
+          "id": 880,
+          "name": "Black Bauhinia",
+          "time": 1576317834,
+          "tries": 1
+        }
+      ],
+      "description": "\"Oh no\", the Librarian whispered as she dropped her book. \"I was just getting to the part about the flag, but I don't remember what page it was. All I remember is the word <code>watevr{</code>. Can you help me find where I was?\"",
+      "website_urls": [
+        "http://13.48.27.177:50000"
+      ],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Librarians Nightmare",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse",
+        "pwn"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 28,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 5,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 5,
+      "solves": 17,
+      "top_solved_teams": [
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576337666,
+          "tries": 1
+        },
+        {
+          "id": 493,
+          "name": "CSI",
+          "time": 1576338253,
+          "tries": 1
+        },
+        {
+          "id": 880,
+          "name": "Black Bauhinia",
+          "time": 1576342761,
+          "tries": 1
+        }
+      ],
+      "description": "!tuo ti kcehc s'tel ,woW !llewsa ti rof ipa na tuo gnivig era yeht dna ho ,esabatad looc repus wen a evah elgoog draeh i",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.192.7:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/15f1f0314233819524b56b8f827c8e2e/client",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/15f1f0314233819524b56b8f827c8e2e/server"
+      ],
+      "follows_flag_format": true,
+      "title": "sabataD",
+      "status": 0
+    },
+    {
+      "categories": [
+        "misc"
+      ],
+      "authors": [
+        "nnewram",
+        "QMechanic"
+      ],
+      "id": 33,
+      "unlocked_by": null,
+      "unsolved_rating_count": 3,
+      "unsolved_rating_sum": 5,
+      "solved_rating_count": 0,
+      "solved_rating_sum": 0,
+      "solves": 19,
+      "top_solved_teams": [
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576271752,
+          "tries": 2
+        },
+        {
+          "id": 5,
+          "name": "LionHack",
+          "time": 1576273828,
+          "tries": 1
+        },
+        {
+          "id": 191,
+          "name": "YummyTacos",
+          "time": 1576276708,
+          "tries": 2
+        }
+      ],
+      "description": "I sure do love my polly uh ehh i mean polynomials, heh. Yeah that's what I meant...",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/19e46afb5c98ce7bedbae9de0b0862e0/polly.txt"
+      ],
+      "follows_flag_format": true,
+      "title": "Polly",
+      "status": 0
+    },
+    {
+      "categories": [
+        "forensics"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 36,
+      "unlocked_by": null,
+      "unsolved_rating_count": 5,
+      "unsolved_rating_sum": 8,
+      "solved_rating_count": 1,
+      "solved_rating_sum": 5,
+      "solves": 2,
+      "top_solved_teams": [
+        {
+          "id": 345,
+          "name": "FAUST",
+          "time": 1576302754,
+          "tries": 8
+        },
+        {
+          "id": 754,
+          "name": "bootplug",
+          "time": 1576337880,
+          "tries": 39
+        }
+      ],
+      "description": "While practicing magic, Emily accidentally swung her magic wand towards her computer and corrupted some of her photos! Since you are pretty good with computers, she came to you asking if you could recover them.",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/f0ec6cbeaa09683c69669677ceb781b0/photos.zip"
+      ],
+      "follows_flag_format": true,
+      "title": "Personal Photos",
+      "status": 0
+    },
+    {
+      "categories": [
+        "crypto"
+      ],
+      "authors": [
+        "QMechanic"
+      ],
+      "id": 1,
+      "unlocked_by": null,
+      "unsolved_rating_count": 3,
+      "unsolved_rating_sum": 10,
+      "solved_rating_count": 3,
+      "solved_rating_sum": 14,
+      "solves": 13,
+      "top_solved_teams": [
+        {
+          "id": 583,
+          "name": "Invaders",
+          "time": 1576264602,
+          "tries": 1
+        },
+        {
+          "id": 100,
+          "name": "kasia-tutej",
+          "time": 1576265335,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576267886,
+          "tries": 1
+        }
+      ],
+      "description": "ECC + RSA = Double security!",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/7c11e086ee0a209235453a93534584ef/ecc-rsa.py",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/7c11e086ee0a209235453a93534584ef/ecc-rsa.txt"
+      ],
+      "follows_flag_format": true,
+      "title": "ECC-RSA",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 21,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 3,
+      "solved_rating_count": 8,
+      "solved_rating_sum": 28,
+      "solves": 56,
+      "top_solved_teams": [
+        {
+          "id": 743,
+          "name": "Bushwhackers",
+          "time": 1576270020,
+          "tries": 1
+        },
+        {
+          "id": 5,
+          "name": "LionHack",
+          "time": 1576271988,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576272972,
+          "tries": 1
+        }
+      ],
+      "description": "If you reverse a reversed program, in reverse. Have you then reversly reversed a reverse reverse or have you reversed the reversed reverse, in reverse?",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/f4853f73d64da0528c3c4b5a81380b60/esrever"
+      ],
+      "follows_flag_format": true,
+      "title": "esreveR",
+      "status": 0
+    },
+    {
+      "categories": [
+        "misc"
+      ],
+      "authors": [
+        "loke"
+      ],
+      "id": 30,
+      "unlocked_by": null,
+      "unsolved_rating_count": 7,
+      "unsolved_rating_sum": 25,
+      "solved_rating_count": 31,
+      "solved_rating_sum": 103,
+      "solves": 274,
+      "top_solved_teams": [
+        {
+          "id": 5,
+          "name": "LionHack",
+          "time": 1576263688,
+          "tries": 1
+        },
+        {
+          "id": 157,
+          "name": "IndianTuesday",
+          "time": 1576263703,
+          "tries": 1
+        },
+        {
+          "id": 705,
+          "name": "KTHCTF0x1",
+          "time": 1576263713,
+          "tries": 1
+        }
+      ],
+      "description": "6anity check i6 on di6cord",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Sanity check",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse",
+        "beginner"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 25,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 1,
+      "solved_rating_count": 15,
+      "solved_rating_sum": 46,
+      "solves": 223,
+      "top_solved_teams": [
+        {
+          "id": 398,
+          "name": "▖▗▘▙▚▛▜▞▟",
+          "time": 1576264057,
+          "tries": 2
+        },
+        {
+          "id": 451,
+          "name": "0xaa55",
+          "time": 1576264164,
+          "tries": 1
+        },
+        {
+          "id": 704,
+          "name": "TJPT3R",
+          "time": 1576264248,
+          "tries": 1
+        }
+      ],
+      "description": "Stop, wait a minute!",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/9e1823bf5219311afafa38a55a24ef86/timeout"
+      ],
+      "follows_flag_format": true,
+      "title": "Timeout",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 26,
+      "unlocked_by": null,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 8,
+      "solved_rating_sum": 27,
+      "solves": 32,
+      "top_solved_teams": [
+        {
+          "id": 5,
+          "name": "LionHack",
+          "time": 1576270298,
+          "tries": 11
+        },
+        {
+          "id": 451,
+          "name": "0xaa55",
+          "time": 1576272187,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576273228,
+          "tries": 2
+        }
+      ],
+      "description": "woo thi chal sooo repyc!",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/d36bfcec1b46f78845dc98ce2ee59d00/3nohtyp.pyc"
+      ],
+      "follows_flag_format": true,
+      "title": "Repyc",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse"
+      ],
+      "authors": [
+        "daydun"
+      ],
+      "id": 27,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 3,
+      "solved_rating_count": 7,
+      "solved_rating_sum": 31,
+      "solves": 47,
+      "top_solved_teams": [
+        {
+          "id": 304,
+          "name": "Swedish Scammers",
+          "time": 1576294715,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576294977,
+          "tries": 1
+        },
+        {
+          "id": 436,
+          "name": "0x00sec",
+          "time": 1576298883,
+          "tries": 1
+        }
+      ],
+      "description": "Fuck. Not only did I lose the flag, but my code also turned sentient again.",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/b2f98c981e6d93cd0edaf6e3ebfbb8f9/fuck.js"
+      ],
+      "follows_flag_format": true,
+      "title": "Fuckn't",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 23,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 5,
+      "solved_rating_count": 10,
+      "solved_rating_sum": 26,
+      "solves": 117,
+      "top_solved_teams": [
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576278947,
+          "tries": 1
+        },
+        {
+          "id": 743,
+          "name": "Bushwhackers",
+          "time": 1576280721,
+          "tries": 1
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576284175,
+          "tries": 1
+        }
+      ],
+      "description": "We ran out of soju so you will have to hack for vodka now, smh my head! Anyways, good luck.",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/5e5f1b192a4dcaae97ac5a87b19230b8/vodka"
+      ],
+      "follows_flag_format": true,
+      "title": "Hacking For Vodka",
+      "status": 0
+    },
+    {
+      "categories": [
+        "misc"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 34,
+      "unlocked_by": null,
+      "unsolved_rating_count": 5,
+      "unsolved_rating_sum": 13,
+      "solved_rating_count": 4,
+      "solved_rating_sum": 16,
+      "solves": 30,
+      "top_solved_teams": [
+        {
+          "id": 145,
+          "name": "Mensa 1969",
+          "time": 1576310385,
+          "tries": 5
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576312864,
+          "tries": 1
+        },
+        {
+          "id": 706,
+          "name": "ThreatLevelMidnight",
+          "time": 1576318053,
+          "tries": 1
+        }
+      ],
+      "description": "Hmm, this looks like something my english teacher would give me, doesn't it? Too bad i forgot english...\nNOTE: the flag for this challenge is not in the standard watevr{} format. Submit it as is right from the challenge without the flag format.",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/9d6e7b9a0c810b64d28e1ba902330c86/romeo"
+      ],
+      "follows_flag_format": false,
+      "title": "Ancient Script",
+      "status": 0
+    },
+    {
+      "categories": [
+        "misc"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 31,
+      "unlocked_by": null,
+      "unsolved_rating_count": 4,
+      "unsolved_rating_sum": 7,
+      "solved_rating_count": 6,
+      "solved_rating_sum": 30,
+      "solves": 15,
+      "top_solved_teams": [
+        {
+          "id": 368,
+          "name": "DTTTCM",
+          "time": 1576273598,
+          "tries": 1
+        },
+        {
+          "id": 45,
+          "name": "FrenchRoomba",
+          "time": 1576287117,
+          "tries": 1
+        },
+        {
+          "id": 507,
+          "name": "Trebuggar",
+          "time": 1576288148,
+          "tries": 1
+        }
+      ],
+      "description": "Tired of Alexa listening to you constantly? Want someone who will definitely totally not look at what you are doing? Try private messaging Axela! You can find her in our <a href=\"https://discord.gg/We5GxvC\">official Discord server</a>.",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [],
+      "follows_flag_format": true,
+      "title": "Axela",
+      "status": 0
+    },
+    {
+      "categories": [
+        "crypto"
+      ],
+      "authors": [
+        "nnewram",
+        "QMechanic"
+      ],
+      "id": 4,
+      "unlocked_by": null,
+      "unsolved_rating_count": 2,
+      "unsolved_rating_sum": 6,
+      "solved_rating_count": 1,
+      "solved_rating_sum": 4,
+      "solves": 9,
+      "top_solved_teams": [
+        {
+          "id": 695,
+          "name": "RareInputs",
+          "time": 1576266858,
+          "tries": 1
+        },
+        {
+          "id": 815,
+          "name": "lnaver",
+          "time": 1576282782,
+          "tries": 1
+        },
+        {
+          "id": 349,
+          "name": "pcback",
+          "time": 1576300715,
+          "tries": 1
+        }
+      ],
+      "description": "I was hosting a very secure python chat server during my lunch break and I saw two of my classmates connect to it over the local network. Unfortunately, they had removed most of the code when i came up to them. I don't know what they said, can you help me figure it out?",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/0a7c1cfdfa46e6169c13745439750fc4/conversation",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/0a7c1cfdfa46e6169c13745439750fc4/super_secure_client_1.py",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/0a7c1cfdfa46e6169c13745439750fc4/super_secure_client_2.py",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/0a7c1cfdfa46e6169c13745439750fc4/super_secure_server.py"
+      ],
+      "follows_flag_format": true,
+      "title": "Crypto over the intrawebs",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 16,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 1,
+      "solved_rating_count": 4,
+      "solved_rating_sum": 16,
+      "solves": 21,
+      "top_solved_teams": [
+        {
+          "id": 494,
+          "name": "OpenToAll",
+          "time": 1576277261,
+          "tries": 1
+        },
+        {
+          "id": 486,
+          "name": "zer0pts",
+          "time": 1576279886,
+          "tries": 1
+        },
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576280470,
+          "tries": 1
+        }
+      ],
+      "description": "Welcome to our betting service! I hope you will like it :))",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.53.69.114:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/2f8ab715b492f1a7e9658d9415da7dce/betstar5000",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/2f8ab715b492f1a7e9658d9415da7dce/libc-2.27.so"
+      ],
+      "follows_flag_format": true,
+      "title": "Betstar 5000",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn"
+      ],
+      "authors": [
+        "loovjo"
+      ],
+      "id": 20,
+      "unlocked_by": null,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 8,
+      "solves": 11,
+      "top_solved_teams": [
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576278448,
+          "tries": 2
+        },
+        {
+          "id": 346,
+          "name": "pwndevils",
+          "time": 1576279115,
+          "tries": 2
+        },
+        {
+          "id": 486,
+          "name": "zer0pts",
+          "time": 1576285176,
+          "tries": 1
+        }
+      ],
+      "description": "I'm working on rewriting Emacs in C, and have gotten quite a lot of it done. Can you help me, and see if there are any security issues with it? \n\nNote: A more functional version can be found here: http://www.logicgamesonline.com/lightsout/",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.53.187.163:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/411bc1e989b1b6148d29fd74d34b70b2/M-x-5x5"
+      ],
+      "follows_flag_format": true,
+      "title": "M-x 5x5",
+      "status": 0
+    },
+    {
+      "categories": [
+        "crypto"
+      ],
+      "authors": [
+        "QMechanic"
+      ],
+      "id": 3,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 1,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 9,
+      "solves": 9,
+      "top_solved_teams": [
+        {
+          "id": 880,
+          "name": "Black Bauhinia",
+          "time": 1576306286,
+          "tries": 3
+        },
+        {
+          "id": 695,
+          "name": "RareInputs",
+          "time": 1576311159,
+          "tries": 6
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576333448,
+          "tries": 1
+        }
+      ],
+      "description": "Mateusz carried a huge jar of small papers with public keys written on them, but he tripped and accidentally dropped them into the scanner and made a txt file out of them! D:\nNote: This challenge is just an introduction to RLWE, the flag is (in standard format) encoded inside the private key.",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/ce952f7dd7b07bc3c8fd191769ff0f6b/baby_rlwe.sage",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/ce952f7dd7b07bc3c8fd191769ff0f6b/public_keys.txt"
+      ],
+      "follows_flag_format": true,
+      "title": "Baby RLWE",
+      "status": 0
+    },
+    {
+      "categories": [
+        "pwn"
+      ],
+      "authors": [
+        "loovjo"
+      ],
+      "id": 15,
+      "unlocked_by": null,
+      "unsolved_rating_count": 2,
+      "unsolved_rating_sum": 6,
+      "solved_rating_count": 2,
+      "solved_rating_sum": 10,
+      "solves": 3,
+      "top_solved_teams": [
+        {
+          "id": 373,
+          "name": "Bumbodosan",
+          "time": 1576353376,
+          "tries": 1
+        },
+        {
+          "id": 346,
+          "name": "pwndevils",
+          "time": 1576368816,
+          "tries": 1
+        },
+        {
+          "id": 45,
+          "name": "FrenchRoomba",
+          "time": 1576375356,
+          "tries": 1
+        }
+      ],
+      "description": "The programmers at Danske Bank heard about this new amazing technology called BlockChain, and just finished rebuilding their banking system using it, with extra protection against swedish hackers. Can you find a way to get enough money to buy the flag?",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.194.186:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/e7955e2b8b5e5b82070f5a7134a86527/Cargo.toml",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/e7955e2b8b5e5b82070f5a7134a86527/src.zip"
+      ],
+      "follows_flag_format": true,
+      "title": "Danish Blockchain",
+      "status": 0
+    },
+    {
+      "categories": [
+        "forensics",
+        "beginner"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 37,
+      "unlocked_by": null,
+      "unsolved_rating_count": 4,
+      "unsolved_rating_sum": 14,
+      "solved_rating_count": 35,
+      "solved_rating_sum": 143,
+      "solves": 425,
+      "top_solved_teams": [
+        {
+          "id": 96,
+          "name": "http.deep",
+          "time": 1576263815,
+          "tries": 1
+        },
+        {
+          "id": 373,
+          "name": "Bumbodosan",
+          "time": 1576263842,
+          "tries": 1
+        },
+        {
+          "id": 587,
+          "name": "CiR",
+          "time": 1576263892,
+          "tries": 1
+        }
+      ],
+      "description": "Omg, look at that cute kitty! It's so cute I can't take my eyes off it!\n\nWait, where did my flag go?",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/73cbc30d6f446b39b6085f9b4b27d819/kitty.jpg"
+      ],
+      "follows_flag_format": true,
+      "title": "Evil Cuteness",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse"
+      ],
+      "authors": [
+        "loovjo"
+      ],
+      "id": 22,
+      "unlocked_by": null,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 3,
+      "solved_rating_sum": 11,
+      "solves": 11,
+      "top_solved_teams": [
+        {
+          "id": 344,
+          "name": "Pwninsula",
+          "time": 1576307493,
+          "tries": 1
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576310217,
+          "tries": 1
+        },
+        {
+          "id": 695,
+          "name": "RareInputs",
+          "time": 1576323693,
+          "tries": 1
+        }
+      ],
+      "description": "\"Yields this sentence when preceded by its quotation\" almost yields this sentence when preceded by its quotation",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/5b4e72179c9322b8b790804f4933d2bb/punk_whine.pl"
+      ],
+      "follows_flag_format": true,
+      "title": "Punk Whine",
+      "status": 0
+    },
+    {
+      "categories": [
+        "reverse",
+        "crypto"
+      ],
+      "authors": [
+        "nnewram"
+      ],
+      "id": 29,
+      "unlocked_by": null,
+      "unsolved_rating_count": 1,
+      "unsolved_rating_sum": 5,
+      "solved_rating_count": 6,
+      "solved_rating_sum": 23,
+      "solves": 25,
+      "top_solved_teams": [
+        {
+          "id": 743,
+          "name": "Bushwhackers",
+          "time": 1576268810,
+          "tries": 1
+        },
+        {
+          "id": 772,
+          "name": "EJr",
+          "time": 1576275504,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576277562,
+          "tries": 1
+        }
+      ],
+      "description": "We have had such terrible experience with socalled secure systems that we decided to create our own! Now we can finally ensure user privacy in remote shells!",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.42.211:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/f9eb9fb234be2dc63bd644bcdba3f525/watshell"
+      ],
+      "follows_flag_format": true,
+      "title": "Watshell",
+      "status": 0
+    },
+    {
+      "categories": [
+        "forensics"
+      ],
+      "authors": [
+        "loovjo"
+      ],
+      "id": 35,
+      "unlocked_by": null,
+      "unsolved_rating_count": 6,
+      "unsolved_rating_sum": 13,
+      "solved_rating_count": 3,
+      "solved_rating_sum": 12,
+      "solves": 21,
+      "top_solved_teams": [
+        {
+          "id": 440,
+          "name": "0xA455",
+          "time": 1576273211,
+          "tries": 1
+        },
+        {
+          "id": 186,
+          "name": "MOHAMED DEV",
+          "time": 1576281810,
+          "tries": 2
+        },
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576281940,
+          "tries": 2
+        }
+      ],
+      "description": "So I found this cool flag while running around, and decided to take a picture of it. But when I went to show the picture to my friends, it was all blurry! Can you help me get out of this convoluted situation?",
+      "website_urls": [],
+      "netcat_ips": [],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/ee1615bc08acc672d22fd5e3e338d48e/blurry.png",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/ee1615bc08acc672d22fd5e3e338d48e/logo.png"
+      ],
+      "follows_flag_format": true,
+      "title": "Blurred Image",
+      "status": 0
+    },
+    {
+      "categories": [
+        "web"
+      ],
+      "authors": [
+        "mateuszdrwal"
+      ],
+      "id": 39,
+      "unlocked_by": 12,
+      "unsolved_rating_count": 0,
+      "unsolved_rating_sum": 0,
+      "solved_rating_count": 0,
+      "solved_rating_sum": 0,
+      "solves": 26,
+      "top_solved_teams": [
+        {
+          "id": 776,
+          "name": "TFNS",
+          "time": 1576349700,
+          "tries": 1
+        },
+        {
+          "id": 486,
+          "name": "zer0pts",
+          "time": 1576350610,
+          "tries": 1
+        },
+        {
+          "id": 537,
+          "name": "C4T BuT S4D",
+          "time": 1576351540,
+          "tries": 1
+        }
+      ],
+      "title": "Pickle Store",
+      "status": 1
+    },
+    {
+      "categories": [
+        "misc"
+      ],
+      "authors": [
+        "nnewram",
+        "daydun"
+      ],
+      "id": 40,
+      "unlocked_by": null,
+      "unsolved_rating_count": 3,
+      "unsolved_rating_sum": 6,
+      "solved_rating_count": 3,
+      "solved_rating_sum": 6,
+      "solves": 7,
+      "top_solved_teams": [
+        {
+          "id": 559,
+          "name": "perfect blue",
+          "time": 1576370458,
+          "tries": 1
+        },
+        {
+          "id": 398,
+          "name": "▖▗▘▙▚▛▜▞▟",
+          "time": 1576373863,
+          "tries": 1
+        },
+        {
+          "id": 1,
+          "name": "HackingForSoju",
+          "time": 1576381548,
+          "tries": 2
+        }
+      ],
+      "description": "Watevr has difficulities making a decent calculator, so we are outsourcing! Oh and we ofcourse want you to do it in our own and therefore superior language, hjärnknull! Best of luck, you will need it.",
+      "website_urls": [],
+      "netcat_ips": [
+        "13.48.59.61:50000"
+      ],
+      "file_urls": [
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/e02877a9ead1808713472a8fa5a42311/clarification",
+        "https://watevrctf2019-deployed.s3.eu-north-1.amazonaws.com/e02877a9ead1808713472a8fa5a42311/hjärnknull.py"
+      ],
+      "follows_flag_format": true,
+      "title": "Hjärnknull",
+      "status": 0
+    }
+  ],
+  "user": null,
+  "team": null,
+  "discord_login": "https://discordapp.com/api/oauth2/authorize?client_id=604419473360814090&redirect_uri=https%3A%2F%2Fctf.watevr.xyz%2Fcallback&response_type=code&scope=identify%20email",
+  "github_login": "https://github.com/login/oauth/authorize?client_id=4b8690f22c5931507927&scope=user:email",
+  "google_login": "https://accounts.google.com/o/oauth2/v2/auth?client_id=323985889737-5cfmqekkmf2trjfjg3m508rf6f5mmq5g.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fctf%2Ewatevr%2Exyz%2Fcallback&scope=email&response_type=code"
+}

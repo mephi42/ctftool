@@ -1,4 +1,4 @@
-- Feature Name: `ctf remote`
+- Feature Name: `remote`
 - Start Date: 2019-12-20
 
 # Summary
@@ -9,7 +9,7 @@
 # Motivation
 [motivation]: #motivation
 
-In order to download challenges, one needs to know where they are hosted.
+In order to download challenges, one needs to know on which website they are hosted.
 
 # Guide-level explanation
 [guide-level-explanation]: #guide-level-explanation
@@ -51,7 +51,7 @@ case.
 # Unresolved questions
 [unresolved-questions]: #unresolved-questions
 
-None.
+How to make `ctf remote` an alias for `ctf remote show`? Clap does not seem to support that yet.
 
 # Future possibilities
 [future-possibilities]: #future-possibilities
