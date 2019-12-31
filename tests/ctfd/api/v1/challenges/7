@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 7,
+    "name": "padwith2019",
+    "value": 1,
+    "description": "Pad with 2019 in 2020! Let your past go!\r\n<br>\r\nnc 207.148.119.58 5555\r\n<br>\r\n<a href=\"https://drive.google.com/file/d/1caal0tC1DqqMTQA4kaWdwbfexN-d3RNC/view\">Source</a>",
+    "category": "Crypto",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 0,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

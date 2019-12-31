@@ -1,0 +1,135 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "type": "standard",
+      "name": "WYSINWYG",
+      "value": 1,
+      "category": "Web",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 2,
+      "type": "standard",
+      "name": "Secure System",
+      "value": 1,
+      "category": "Web",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 3,
+      "type": "standard",
+      "name": "The Prophet",
+      "value": 1,
+      "category": "Web",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 4,
+      "type": "standard",
+      "name": "2019rearrange",
+      "value": 1,
+      "category": "Crypto",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 5,
+      "type": "standard",
+      "name": "2020th",
+      "value": 1,
+      "category": "Crypto",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 6,
+      "type": "standard",
+      "name": "commonfactor",
+      "value": 1,
+      "category": "Crypto",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 7,
+      "type": "standard",
+      "name": "padwith2019",
+      "value": 1,
+      "category": "Crypto",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 8,
+      "type": "standard",
+      "name": "yaecc",
+      "value": 1,
+      "category": "Crypto",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 9,
+      "type": "standard",
+      "name": "oanhbot",
+      "value": 1,
+      "category": "Pwnable",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 10,
+      "type": "standard",
+      "name": "oldschool",
+      "value": 1,
+      "category": "Pwnable",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 11,
+      "type": "standard",
+      "name": "SmallService",
+      "value": 1,
+      "category": "Pwnable",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 12,
+      "type": "standard",
+      "name": "Baby ARM Shellcode",
+      "value": 1,
+      "category": "Pwnable",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    },
+    {
+      "id": 13,
+      "type": "standard",
+      "name": "MeePwnTube2050",
+      "value": 1,
+      "category": "Web",
+      "tags": [],
+      "template": "/plugins/challenges/assets/view.html",
+      "script": "/plugins/challenges/assets/view.js"
+    }
+  ]
+}

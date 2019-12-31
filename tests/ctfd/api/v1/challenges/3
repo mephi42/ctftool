@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 3,
+    "name": "The Prophet",
+    "value": 1,
+    "description": "Wohoo, wanna hear some oracle?<br>\r\nhttp://45.77.245.232:7004/",
+    "category": "Web",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 2,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

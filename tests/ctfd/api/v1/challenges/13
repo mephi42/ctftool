@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 13,
+    "name": "MeePwnTube2050",
+    "value": 1,
+    "description": "<center>\r\n<img src=\"http://meepwntube2050.0x1337.space/images/lol.jpg\" width=\"400\" height=\"300\">\r\n<br>\r\n<br>\r\n<a href = \"http://meepwntube2050.0x1337.space/\">MeePwnTube2050</a>\r\n<br>\r\n<a href=\"https://drive.google.com/file/d/12MZJiMUCmLJ84-NypWByEzezkz4fx9RA/view?usp=sharing\">Source</a>\r\n</center>\r\n\r\n",
+    "category": "Web",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 0,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

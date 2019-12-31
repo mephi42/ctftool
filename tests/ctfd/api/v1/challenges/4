@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 4,
+    "name": "2019rearrange",
+    "value": 1,
+    "description": "Rearrange your 2019, keep your joy, throw all your sorrow away!\r\n<br>\r\n<a href=\"https://drive.google.com/file/d/14gTwz4r7ixFEPbBdRKeFKjZ9cbbIRUMh/view\">Source</a>",
+    "category": "Crypto",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 5,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}
