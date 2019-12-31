@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 6,
+    "name": "commonfactor",
+    "value": 1,
+    "description": "What if each modulus has a prime factor that close to each other?\r\n<br>\r\n<a href=\"https://drive.google.com/file/d/11UFKErNAnLwCyBnIP15xGZLgF6MGHeFi/view\">Source</a>",
+    "category": "Crypto",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 1,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 2,
+    "name": "Secure System",
+    "value": 1,
+    "description": "I created a security checker, can you help audit the source?\r\n<br>\r\nhttp://45.77.240.178:8002/\r\n<br>\r\n<a href=\"https://drive.google.com/file/d/1vOPmS30ZrW5-Uoz-AKBef3T6no2qpvt_/view\">Source</a>",
+    "category": "Web",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 0,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

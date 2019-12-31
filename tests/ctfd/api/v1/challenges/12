@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 12,
+    "name": "Baby ARM Shellcode",
+    "value": 1,
+    "description": "Baby ARM shellcode</br>\r\nnc 212.47.229.147 9999</br>\r\nBinary: <a href=\"https://drive.google.com/open?id=1CW4vmeLcaUy-gv-_oySii8-M6KKLbTdJ\">0a87be3e13a8709db738513760865aeb5ad3d791_babyshellcode</a></br>\r\nAuthor: @quynhnhu",
+    "category": "Pwnable",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 0,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

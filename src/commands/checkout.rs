@@ -163,7 +163,7 @@ fn checkout_challenge<'a>(
                     alternative: alternative.name.clone(),
                 },
                 checkout_alternative(&alternative, path.clone(), &progress)
-                    .map_err(move |e| e.context(format!("Failed to checkout {}", path.display())))
+                    .map_err(move |e| e.context(format!("Could not checkout {}", path.display())))
                     .boxed(),
             ));
         }

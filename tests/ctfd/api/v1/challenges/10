@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 10,
+    "name": "oldschool",
+    "value": 1,
+    "description": "nc 54.157.217.45 19669</br>\r\nDownload: <a href=\"https://drive.google.com/open?id=1xASVxfVS-wEfJYwZPjlOQDsMIx1xI6ik\">Here</a></br>\r\nAuthor: @chung96vn",
+    "category": "Pwnable",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 2,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

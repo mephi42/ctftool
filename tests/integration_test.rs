@@ -1,3 +1,5 @@
+use std::path::{Path, PathBuf};
+
 use assert_cmd::Command;
 use hyper::server::Server;
 use hyper::service::{make_service_fn, service_fn};
@@ -5,6 +7,7 @@ use hyper::{Body, Request, Response};
 use tempdir::TempDir;
 
 use anyhow::{anyhow, Error, Result};
+use assert_cmd::cargo::cargo_bin;
 
 struct WorkDir {
     temp_dir: TempDir,
@@ -53,32 +56,34 @@ fn test_remote() -> Result<()> {
     Ok(())
 }
 
-struct WatevrServer {
+struct StaticServer {
     port: u16,
     shutdown_tx: tokio::sync::oneshot::Sender<()>,
     shutdown_complete_rx: tokio::sync::oneshot::Receiver<()>,
 }
 
-impl WatevrServer {
-    async fn handle_request(req: Request<Body>) -> Result<Response<Body>> {
-        if req.uri() == "/api/watsup" {
-            Ok(Response::new(Body::from(include_str!("watevr/watsup"))))
-        } else {
-            Ok(Response::builder()
-                .status(404)
-                .body(Body::from(""))
-                .unwrap())
+impl StaticServer {
+    async fn handle_request(root: &Path, req: Request<Body>) -> Result<Response<Body>> {
+        let mut path = root.to_path_buf();
+        let uri_path = Path::new(req.uri().path()).strip_prefix("/")?;
+        path.push(uri_path);
+        if path.is_dir() {
+            path.push("index");
         }
+        let content = std::fs::read(path)?;
+        Ok(Response::new(Body::from(content)))
     }
 
-    fn spawn() -> Result<WatevrServer> {
+    fn spawn(root: PathBuf) -> Result<StaticServer> {
         let (shutdown_tx, shutdown_rx) = tokio::sync::oneshot::channel::<()>();
         let (shutdown_complete_tx, shutdown_complete_rx) = tokio::sync::oneshot::channel::<()>();
-        let make_svc = make_service_fn(|_| {
-            async {
-                Ok::<_, Error>(service_fn(|req| {
-                    async {
-                        match WatevrServer::handle_request(req).await {
+        let make_svc = make_service_fn(move |_| {
+            let root = root.clone();
+            async move {
+                Ok::<_, Error>(service_fn(move |req| {
+                    let root = root.clone();
+                    async move {
+                        match StaticServer::handle_request(&root, req).await {
                             ok @ Ok(_) => ok,
                             Err(e) => {
                                 println!("{}", e);
@@ -107,7 +112,7 @@ impl WatevrServer {
                 println!("Could not send shutdown completion notification");
             }
         });
-        Ok(WatevrServer {
+        Ok(StaticServer {
             port,
             shutdown_tx,
             shutdown_complete_rx,
@@ -123,10 +128,14 @@ impl WatevrServer {
     }
 }
 
-#[tokio::main]
-#[test]
-async fn test_fetch_watevr() -> Result<()> {
-    let server = WatevrServer::spawn()?;
+async fn test_fetch(engine: &str) -> Result<()> {
+    let mut root = cargo_bin("ctf");
+    root.pop();
+    root.pop();
+    root.pop();
+    root.push("tests");
+    root.push(engine);
+    let server = StaticServer::spawn(root)?;
     tokio::task::spawn_blocking({
         let url = format!("http://localhost:{}", server.port);
         move || -> Result<()> {
@@ -142,4 +151,16 @@ async fn test_fetch_watevr() -> Result<()> {
     .await??;
     server.shutdown().await?;
     Ok(())
+}
+
+#[tokio::main]
+#[test]
+async fn test_fetch_watevr() -> Result<()> {
+    test_fetch("watevr").await
+}
+
+#[tokio::main]
+#[test]
+async fn test_fetch_ctfd() -> Result<()> {
+    test_fetch("ctfd").await
 }

@@ -1,9 +1,11 @@
+use futures::future::FutureExt;
 use serde::Deserialize;
 use url::Url;
 
 use anyhow::{anyhow, Result};
 
 use crate::ctf;
+use crate::engines;
 
 #[derive(Deserialize)]
 struct Watsup {
@@ -26,11 +28,7 @@ struct Challenge {
 }
 
 pub async fn fetch(remote: &ctf::Remote) -> Result<ctf::CTF> {
-    let mut ctf = ctf::CTF {
-        name: "".into(),
-        remotes: vec![],
-        challenges: vec![],
-    };
+    let mut ctf = ctf::CTF::default();
     let mut url = Url::parse(&remote.url)?;
     url.path_segments_mut()
         .map_err(|_| anyhow!("cannot be base"))?
@@ -79,4 +77,12 @@ Description: {}",
         })
     }
     Ok(ctf)
+}
+
+pub struct WatevrEngine {}
+
+impl engines::Engine for WatevrEngine {
+    fn fetch<'a>(&self, remote: &'a ctf::Remote) -> engines::FetchResult<'a> {
+        fetch(remote).boxed()
+    }
 }

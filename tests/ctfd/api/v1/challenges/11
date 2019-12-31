@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 11,
+    "name": "SmallService",
+    "value": 1,
+    "description": "nc 54.157.217.45 39669</br>\r\nDownload: <a href=\"https://drive.google.com/open?id=1taGMCQszLwIb7uwZUeJ6jUmEioNVm6gl\">Here</a></br>\r\nAuthor: @chung96vn",
+    "category": "Pwnable",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 0,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

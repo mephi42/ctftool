@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 5,
+    "name": "2020th",
+    "value": 1,
+    "description": "Now, I bet you wish you were a prophet. Happy new year 2020th!\r\n<br>\r\nnc 207.148.119.58 6666\r\n<br>\r\n<a href=\"https://drive.google.com/file/d/1gK_U9fQfP0-vOWqKjoEkULEnKw4525-a/view\">Source</a>",
+    "category": "Crypto",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 2,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "WYSINWYG",
+    "value": 1,
+    "description": "What you see is not what you get... Do you see the flag? then you don't get the flag.\r\n<br>\r\nhttp://45.77.240.178:8001/",
+    "category": "Web",
+    "state": "visible",
+    "max_attempts": 0,
+    "type": "standard",
+    "type_data": {
+      "id": "standard",
+      "name": "standard",
+      "templates": {
+        "create": "/plugins/challenges/assets/create.html",
+        "update": "/plugins/challenges/assets/update.html",
+        "view": "/plugins/challenges/assets/view.html"
+      },
+      "scripts": {
+        "create": "/plugins/challenges/assets/create.js",
+        "update": "/plugins/challenges/assets/update.js",
+        "view": "/plugins/challenges/assets/view.js"
+      }
+    },
+    "solves": 17,
+    "files": [],
+    "tags": [],
+    "hints": []
+  }
+}

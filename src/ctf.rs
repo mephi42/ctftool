@@ -4,6 +4,7 @@ use std::fs;
 use std::io::ErrorKind;
 use std::path::PathBuf;
 
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 use url::Url;
@@ -11,7 +12,7 @@ use url::Url;
 use anyhow::{anyhow, Error, Result};
 use lazy_static::lazy_static;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 pub struct CTF {
     #[serde(default)]
     pub name: String,
@@ -25,6 +26,12 @@ pub struct CTF {
 pub struct Remote {
     pub name: String,
     pub url: String,
+    #[serde(default = "default_engine")]
+    pub engine: String,
+}
+
+pub fn default_engine() -> String {
+    "auto".into()
 }
 
 #[derive(Serialize, Deserialize)]
@@ -131,12 +138,12 @@ lazy_static! {
     };
 }
 
-pub fn best_category(categories: &[String]) -> &str {
+pub fn best_category(categories: &[String]) -> String {
     categories
         .iter()
-        .map(|category| category.as_str())
-        .min_by_key(|category| CATEGORY_PRIORITIES.get(category).unwrap_or(&999))
-        .unwrap_or(&"misc")
+        .map(|category| category.to_lowercase())
+        .min_by_key(|category| CATEGORY_PRIORITIES.get(category.as_str()).unwrap_or(&999))
+        .unwrap_or_else(|| "misc".to_owned())
 }
 
 pub fn sanitize_title(title: &str) -> String {
@@ -159,6 +166,18 @@ pub fn binary_from_url(url: &str) -> Result<Binary> {
             checksum: None,
         }],
     })
+}
+
+pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
+    let mut services = Vec::new();
+    let nc_regex = Regex::new(r#"nc ([^ ]+) (\d+)"#)?;
+    for nc in nc_regex.captures_iter(&description) {
+        services.push(Service {
+            name: None,
+            url: Some(format!("nc://{}:{}", &nc[1], &nc[2])),
+        });
+    }
+    Ok(services)
 }
 
 fn merge_binary_alternatives(
@@ -286,4 +305,18 @@ pub fn find_alternative_mut<'a>(
         .iter_mut()
         .find(|alternative| alternative.name == name)
         .ok_or_else(|| anyhow!("No such alternative: {}", name))
+}
+
+pub fn find_remote<'a>(ctf: &'a CTF, name: &str) -> Result<&'a Remote> {
+    ctf.remotes
+        .iter()
+        .find(|remote| remote.name == name)
+        .ok_or_else(|| anyhow!("Remote {} does not exist", name))
+}
+
+pub fn find_remote_mut<'a>(ctf: &'a mut CTF, name: &str) -> Result<&'a mut Remote> {
+    ctf.remotes
+        .iter_mut()
+        .find(|remote| remote.name == name)
+        .ok_or_else(|| anyhow!("Remote {} does not exist", name))
 }
