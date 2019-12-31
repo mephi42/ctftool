@@ -1,6 +1,5 @@
+use anyhow::{bail, Result};
 use clap::Clap;
-
-use anyhow::{anyhow, Result};
 
 use crate::ctf;
 use crate::git;
@@ -45,7 +44,7 @@ pub struct Rm {
 }
 
 pub fn run(remote: Remote) -> Result<()> {
-    let mut ctf = ctf::load()?;
+    let mut ctf = ctf::load()?.ctf;
     match remote.subcmd {
         SubCommand::Show(_show) => {
             for remote in ctf.remotes {
@@ -55,7 +54,7 @@ pub fn run(remote: Remote) -> Result<()> {
         SubCommand::Add(add) => {
             let existing = ctf.remotes.iter().find(|remote| remote.name == add.name);
             if existing.is_some() {
-                return Err(anyhow!("Remote {} already exists", add.name));
+                bail!("Remote {} already exists", add.name);
             }
             let message = format!("Add remote {} pointing to {}", add.name, add.url);
             ctf.remotes.push(ctf::Remote {
@@ -69,7 +68,7 @@ pub fn run(remote: Remote) -> Result<()> {
             let n_remotes = ctf.remotes.len();
             ctf.remotes.retain(|remote| remote.name != rm.name);
             if ctf.remotes.len() + 1 != n_remotes {
-                return Err(anyhow!("Remote {} does not exist", rm.name));
+                bail!("Remote {} does not exist", rm.name);
             }
             git::commit(&ctf, &message)?;
         }

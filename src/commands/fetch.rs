@@ -14,7 +14,7 @@ pub struct Fetch {
 }
 
 pub async fn run(fetch: Fetch) -> Result<()> {
-    let mut ctf = ctf::load()?;
+    let mut ctf = ctf::load()?.ctf;
     let remote = ctf
         .remotes
         .iter()

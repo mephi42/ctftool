@@ -8,11 +8,15 @@ edition = "2018"
 anyhow = "1.0.25"
 # use git version for derive feature
 clap = { git = "https://github.com/clap-rs/clap" }
+futures = "0.3.1"
+hex = "0.4.0"
+indicatif = "0.13.0"
 lazy_static = "1.4.0"
 # use git version for async feature
 reqwest = { git = "https://github.com/seanmonstar/reqwest.git", features = ["json"] }
 serde = { version = "1.0.104", features = ["derive"] }
 serde_yaml = "0.8.11"
+sha2 = "0.8.0"
 tokio = { version = "0.2.6", features = ["fs", "macros"] }
 url = "2.1.0"
 

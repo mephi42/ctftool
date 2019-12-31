@@ -27,6 +27,10 @@ enum SubCommand {
     /// Downloads challenge metadata
     #[clap(name = "fetch")]
     Fetch(commands::fetch::Fetch),
+
+    /// Downloads challenge binaries
+    #[clap(name = "checkout")]
+    Checkout(commands::checkout::Checkout),
 }
 
 #[tokio::main]
@@ -36,5 +40,6 @@ async fn main() -> Result<()> {
         SubCommand::Init(init) => commands::init::run(init),
         SubCommand::Remote(remote) => commands::remote::run(remote),
         SubCommand::Fetch(fetch) => commands::fetch::run(fetch).await,
+        SubCommand::Checkout(checkout) => commands::checkout::run(checkout).await,
     }
 }

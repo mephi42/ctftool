@@ -1,11 +1,14 @@
 use std::collections::HashMap;
+use std::env;
 use std::fs;
+use std::io::ErrorKind;
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 use url::Url;
 
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, Error, Result};
 use lazy_static::lazy_static;
 
 #[derive(Serialize, Deserialize)]
@@ -39,9 +42,17 @@ pub struct Binary {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct Checksum {
+    pub algorithm: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct BinaryAlternative {
     pub name: String,
     pub url: Option<String>,
+    #[serde(default)]
+    pub checksum: Option<Checksum>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -52,21 +63,58 @@ pub struct Service {
     pub url: Option<String>,
 }
 
-pub fn load() -> Result<CTF> {
-    let bytes = fs::read(".ctf")?;
-    let str = &String::from_utf8(bytes)?;
-    let ctf = serde_yaml::from_str(str)?;
-    Ok(ctf)
+pub struct Context {
+    pub ctf: CTF,
+    pub root: PathBuf,
+    pub path: Vec<String>,
+}
+
+pub fn load() -> Result<Context> {
+    let mut path = Vec::new();
+    let mut dir = env::current_dir()?;
+    loop {
+        match fs::read(dir.join(".ctf")) {
+            Ok(bytes) => {
+                let str = &String::from_utf8(bytes)?;
+                let ctf: CTF = serde_yaml::from_str(str)?;
+                path.reverse();
+                break Ok(Context {
+                    ctf,
+                    root: dir,
+                    path,
+                });
+            }
+            Err(e) if e.kind() == ErrorKind::NotFound => {
+                if !dir.pop() {
+                    break Err(anyhow!(
+                        "No .ctf file in the current or any of the parent directories"
+                    ));
+                }
+            }
+            Err(e) => break Err(Error::new(e)),
+        }
+    }
+}
+
+fn ignore(ctf: &CTF) -> Vec<String> {
+    let mut result = vec!["/*".into(), "!/.ctf".into(), "!/.gitignore".into()];
+    for challenge in &ctf.challenges {
+        result.push(format!("!/{}/", challenge.name));
+        result.push(format!("/{}/*", challenge.name));
+        for binary in &challenge.binaries {
+            for alternative in &binary.alternatives {
+                result.push(format!(
+                    "!/{}/{}.{}",
+                    challenge.name, binary.name, alternative.name
+                ));
+            }
+        }
+    }
+    result
 }
 
 pub fn store(ctf: &CTF) -> Result<()> {
-    fs::write(
-        ".gitignore",
-        "/*
-!/.ctf
-!/.gitignore
-",
-    )?;
+    fs::write(".gitignore", ignore(&ctf).join("\n"))?;
     fs::write(".ctf", serde_yaml::to_string(&ctf)?)?;
     Ok(())
 }
@@ -108,6 +156,7 @@ pub fn binary_from_url(url: &str) -> Result<Binary> {
         alternatives: vec![BinaryAlternative {
             name: "orig".into(),
             url: Some(url.into()),
+            checksum: None,
         }],
     })
 }
@@ -118,6 +167,9 @@ fn merge_binary_alternatives(
 ) {
     if binary_alternative2.url.is_some() {
         binary_alternative.url = binary_alternative2.url;
+    }
+    if binary_alternative2.checksum.is_some() {
+        binary_alternative.checksum = binary_alternative2.checksum;
     }
 }
 
@@ -185,4 +237,53 @@ pub fn merge(ctf: &mut CTF, ctf2: CTF) {
             None => ctf.challenges.push(challenge2),
         }
     }
+}
+
+pub fn find_challenge<'a>(ctf: &'a CTF, name: &str) -> Result<&'a Challenge> {
+    ctf.challenges
+        .iter()
+        .find(|challenge| challenge.name == name)
+        .ok_or_else(|| anyhow!("No such challenge: {}", name))
+}
+
+pub fn find_challenge_mut<'a>(ctf: &'a mut CTF, name: &str) -> Result<&'a mut Challenge> {
+    ctf.challenges
+        .iter_mut()
+        .find(|challenge| challenge.name == name)
+        .ok_or_else(|| anyhow!("No such challenge: {}", name))
+}
+
+pub fn find_binary<'a>(challenge: &'a Challenge, name: &str) -> Result<&'a Binary> {
+    challenge
+        .binaries
+        .iter()
+        .find(|binary| binary.name == name)
+        .ok_or_else(|| anyhow!("No such binary: {}", name))
+}
+
+pub fn find_binary_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Result<&'a mut Binary> {
+    challenge
+        .binaries
+        .iter_mut()
+        .find(|binary| binary.name == name)
+        .ok_or_else(|| anyhow!("No such binary: {}", name))
+}
+
+pub fn find_alternative<'a>(binary: &'a Binary, name: &str) -> Result<&'a BinaryAlternative> {
+    binary
+        .alternatives
+        .iter()
+        .find(|alternative| alternative.name == name)
+        .ok_or_else(|| anyhow!("No such alternative: {}", name))
+}
+
+pub fn find_alternative_mut<'a>(
+    binary: &'a mut Binary,
+    name: &str,
+) -> Result<&'a mut BinaryAlternative> {
+    binary
+        .alternatives
+        .iter_mut()
+        .find(|alternative| alternative.name == name)
+        .ok_or_else(|| anyhow!("No such alternative: {}", name))
 }
