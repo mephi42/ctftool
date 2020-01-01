@@ -3,11 +3,10 @@ use std::process::{Command, Stdio};
 use anyhow::Result;
 
 use crate::ctf;
-use crate::ctf::CTF;
 use crate::subprocess::check_call;
 
-pub fn commit(ctf: &CTF, message: &str) -> Result<()> {
-    ctf::store(ctf)?;
+pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
+    ctf::store(context)?;
     check_call(Command::new("git").args(&["add", "."]))?;
     check_call(Command::new("git").args(&["commit", "-m", message]))?;
     Ok(())

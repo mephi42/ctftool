@@ -22,7 +22,11 @@ existing ones are fixed).
 
 `ctf fetch` works exclusively with `.ctf` file. It downloads only metadata, not binaries.
 
-`ctf fetch` supports multiple different CTF website engines, and can automatically detect which one is used.
+`ctf fetch` supports multiple different CTF website engines, and can automatically detect which one is used (see
+[0004-engines.md](0004-engines.md)).
+
+`ctf fetch` can be used to access CTF websites that provide challenges only to authenticated users (see
+[0005-login.md](0005-login.md)).
 
 # Drawbacks
 [drawbacks]: #drawbacks
@@ -44,7 +48,7 @@ only links to large files, and `git checkout` downloads them when necessary.
 # Unresolved questions
 [unresolved-questions]: #unresolved-questions
 
-How should credentials be stored in order to support cases when challenges are accessible only to logged in users?
+None.
 
 # Future possibilities
 [future-possibilities]: #future-possibilities

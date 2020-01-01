@@ -67,37 +67,41 @@ pub struct SetEngine {
 }
 
 pub fn run(remote: Remote) -> Result<()> {
-    let mut ctf = ctf::load()?.ctf;
+    let mut context = ctf::load()?;
     match remote.subcmd {
         SubCommand::Show(_show) => {
-            for remote in ctf.remotes {
+            for remote in context.ctf.remotes {
                 println!("{}", remote.name)
             }
         }
         SubCommand::Add(add) => {
-            let existing = ctf.remotes.iter().find(|remote| remote.name == add.name);
+            let existing = context
+                .ctf
+                .remotes
+                .iter()
+                .find(|remote| remote.name == add.name);
             if existing.is_some() {
                 bail!("Remote {} already exists", add.name);
             }
             let message = format!("Add remote {} pointing to {}", add.name, add.url);
-            ctf.remotes.push(ctf::Remote {
+            context.ctf.remotes.push(ctf::Remote {
                 name: add.name,
                 url: add.url,
                 engine: ctf::default_engine(),
             });
-            git::commit(&ctf, &message)?;
+            git::commit(&context, &message)?;
         }
         SubCommand::Rm(rm) => {
             let message = format!("Remove remote {}", rm.name);
-            let n_remotes = ctf.remotes.len();
-            ctf.remotes.retain(|remote| remote.name != rm.name);
-            if ctf.remotes.len() + 1 != n_remotes {
+            let n_remotes = context.ctf.remotes.len();
+            context.ctf.remotes.retain(|remote| remote.name != rm.name);
+            if context.ctf.remotes.len() + 1 != n_remotes {
                 bail!("Remote {} does not exist", rm.name);
             }
-            git::commit(&ctf, &message)?;
+            git::commit(&context, &message)?;
         }
         SubCommand::GetEngine(get_engine) => {
-            let remote = ctf::find_remote(&ctf, &get_engine.name)?;
+            let remote = ctf::find_remote(&context.ctf, &get_engine.name)?;
             println!("{}", remote.engine);
         }
         SubCommand::SetEngine(set_engine) => {
@@ -105,9 +109,9 @@ pub fn run(remote: Remote) -> Result<()> {
                 "Set remote {} engine to {}",
                 set_engine.name, set_engine.engine
             );
-            let remote = ctf::find_remote_mut(&mut ctf, &set_engine.name)?;
+            let remote = ctf::find_remote_mut(&mut context.ctf, &set_engine.name)?;
             remote.engine = set_engine.engine;
-            git::commit(&ctf, &message)?;
+            git::commit(&context, &message)?;
         }
     }
     Ok(())

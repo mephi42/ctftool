@@ -1,10 +1,12 @@
 use clap::Clap;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
+use cookie_store::CookieStore;
 
 use crate::ctf;
 use crate::engines;
 use crate::git;
+use crate::http;
 
 #[derive(Clap)]
 pub struct Fetch {
@@ -14,17 +16,23 @@ pub struct Fetch {
 }
 
 pub async fn run(fetch: Fetch) -> Result<()> {
-    let mut ctf = ctf::load()?.ctf;
-    let mut remote = ctf::find_remote_mut(&mut ctf, &fetch.name)?;
-    let fetched = if remote.engine == "auto" {
-        let (engine, fetched) = engines::fetch_auto(&remote).await?;
-        remote.engine = engine;
-        fetched
-    } else {
-        let engine = engines::get_engine(&remote.engine)?;
-        engine.fetch(&remote).await?
-    };
-    ctf::merge(&mut ctf, fetched);
-    git::commit(&ctf, &format!("Fetch from {}", fetch.name))?;
+    let mut context = ctf::load()?;
+    let mut remote = ctf::find_remote_mut(&mut context.ctf, &fetch.name)?;
+    let client = http::mk_client()?;
+    let mut cookie_store = CookieStore::default();
+    for remote_credentials in &context.credentials.remotes {
+        if remote_credentials.name == fetch.name {
+            cookie_store = CookieStore::load_json(remote_credentials.cookies.as_bytes())
+                .map_err(|_| anyhow!("Could not load cookies"))?;
+            break;
+        }
+    }
+    if remote.engine == "auto" {
+        remote.engine = engines::detect(&client, &remote).await?;
+    }
+    let engine = engines::get_engine(&remote.engine)?;
+    let fetched = engine.fetch(&client, &cookie_store, &remote).await?;
+    ctf::merge(&mut context.ctf, fetched);
+    git::commit(&context, &format!("Fetch from {}", fetch.name))?;
     Ok(())
 }
