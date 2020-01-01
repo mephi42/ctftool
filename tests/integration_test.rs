@@ -1,5 +1,6 @@
 use std::path::{Path, PathBuf};
 
+use assert_cmd::cargo::cargo_bin;
 use assert_cmd::Command;
 use hyper::server::Server;
 use hyper::service::{make_service_fn, service_fn};
@@ -7,7 +8,6 @@ use hyper::{Body, Request, Response};
 use tempdir::TempDir;
 
 use anyhow::{anyhow, Error, Result};
-use assert_cmd::cargo::cargo_bin;
 
 struct WorkDir {
     temp_dir: TempDir,

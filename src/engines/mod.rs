@@ -2,8 +2,9 @@ use std::collections::HashMap;
 use std::future::Future;
 use std::pin::Pin;
 
-use anyhow::{anyhow, Result};
 use cookie_store::CookieStore;
+
+use anyhow::{anyhow, Result};
 use lazy_static::lazy_static;
 
 use crate::ctf;

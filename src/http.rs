@@ -1,6 +1,7 @@
-use anyhow::{anyhow, Result};
 use reqwest::header::HeaderValue;
 use reqwest::{RequestBuilder, Url};
+
+use anyhow::{anyhow, Result};
 
 pub fn build_url(base: &str, path: &[&str]) -> Result<Url> {
     let mut url = Url::parse(base)?;
