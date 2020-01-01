@@ -6,7 +6,7 @@ use clap::Clap;
 
 use anyhow::{anyhow, Result};
 
-use crate::ctf::CTF;
+use crate::ctf;
 use crate::git;
 use crate::subprocess::check_call;
 
@@ -14,8 +14,9 @@ use crate::subprocess::check_call;
 pub struct Init {}
 
 pub fn run(_init: Init) -> Result<()> {
-    let ctf = CTF {
-        name: Path::file_name(&current_dir()?)
+    let root = current_dir()?;
+    let ctf = ctf::CTF {
+        name: Path::file_name(&root)
             .and_then({ |x| x.to_str() })
             .ok_or_else({ || anyhow!("Could not obtain the name of the current directory") })?
             .into(),
@@ -29,6 +30,12 @@ pub fn run(_init: Init) -> Result<()> {
     if git::get_option("user.email")?.is_none() {
         git::set_option("user.email", "ctf@localhost")?;
     }
-    git::commit(&ctf, "Initial commit")?;
+    let context = ctf::Context {
+        ctf,
+        credentials: ctf::Credentials::default(),
+        root,
+        path: Vec::new(),
+    };
+    git::commit(&context, "Initial commit")?;
     Ok(())
 }

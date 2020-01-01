@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TetCTF</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="/themes/core/static/img/favicon.ico"
+		  type="image/x-icon">
+	<link rel="stylesheet" href="/themes/core/static/css/vendor/bootstrap.min.css">
+	<link rel="stylesheet" href="/themes/core/static/css/vendor/font-awesome/fontawesome-fonts.css" type='text/css'>
+	<link rel="stylesheet" href="/themes/core/static/css/vendor/font-awesome/fontawesome-all.min.css" type='text/css'>
+	<link rel="stylesheet" href="/themes/core/static/css/vendor/font.css"  type='text/css'>
+	<link rel="stylesheet" href="/themes/core/static/css/jumbotron.css">
+	<link rel="stylesheet" href="/themes/core/static/css/sticky-footer.css">
+	<link rel="stylesheet" href="/themes/core/static/css/base.css">
+	
+	
+	<link rel="stylesheet" type="text/css" href="/static/user.css">
+	<script src="/themes/core/static/js/vendor/promise-polyfill.min.js"></script>
+	<script src="/themes/core/static/js/vendor/eventsource.min.js"></script>
+	<script src="/themes/core/static/js/vendor/fetch.min.js"></script>
+	<script src="/themes/core/static/js/CTFd.js"></script>
+	<script src="/themes/core/static/js/vendor/moment.min.js"></script>
+	<script src="/themes/core/static/js/vendor/nunjucks.min.js"></script>
+	<script type="text/javascript">
+		var script_root = "";
+		var csrf_nonce = "f9bd99eb5ec9767844d185d14a4b09cdc6138d0c4f2a60f633c457ade14eee07";
+		var user_mode = "users";
+		var ctf_start = 1577811600;
+		var ctf_end = 1578330000;
+		CTFd.options.urlRoot = script_root;
+		CTFd.options.csrfNonce = csrf_nonce;
+		CTFd.options.start = ctf_start;
+		CTFd.options.end = ctf_end;
+	</script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+		<div class="container">
+			<a href="/" class="navbar-brand">
+				
+				TetCTF
+				
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#base-navbars"
+					aria-controls="base-navbars" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="base-navbars">
+				<ul class="navbar-nav mr-auto">
+					
+						
+							<li class="nav-item">
+								<a class="nav-link" href="/rules">Rules</a>
+							</li>
+						
+					
+
+					<li class="nav-item">
+						<a class="nav-link" href="/notifications">Notifications</a>
+					</li>
+					
+						<li class="nav-item">
+							<a class="nav-link" href="/users">Users</a>
+						</li>
+						
+					
+					
+						<li class="nav-item">
+							<a class="nav-link" href="/scoreboard">Scoreboard</a>
+						</li>
+					
+					<li class="nav-item">
+						<a class="nav-link" href="/challenges">Challenges</a>
+					</li>
+				</ul>
+
+				<hr class="d-sm-flex d-md-flex d-lg-none">
+
+				<ul class="navbar-nav ml-md-auto d-block d-sm-flex d-md-flex">
+					
+						
+							<li class="nav-item">
+								<a class="nav-link" href="/register">Register</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link d-none d-md-block d-lg-block">|</a>
+							</li>
+						
+						<li class="nav-item">
+							<a class="nav-link" href="/login">Login</a>
+						</li>
+					
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main role="main">
+		
+	<div class="container">
+	<p><link rel="stylesheet" href="https://tsug0d.com/tetctf/sakura-master/dist/sakura.css" /></p>
+<p><script src="https://tsug0d.com/tetctf/sakura-master/dist/sakura.js" text="text/javascript"></script></p>
+<p><script>
+      var sakura = new Sakura('body', {
+        colors: [
+          {
+            gradientColorStart: 'rgba(255, 183, 197, 0.9)',
+            gradientColorEnd: 'rgba(255, 197, 208, 0.9)',
+            gradientColorDegree: 120,
+          },
+          {
+            gradientColorStart: 'rgba(255,189,189)',
+            gradientColorEnd: 'rgba(227,170,181)',
+            gradientColorDegree: 120,
+          },
+          {
+            gradientColorStart: 'rgba(212,152,163)',
+            gradientColorEnd: 'rgba(242,185,196)',
+            gradientColorDegree: 120,
+          },
+        ],
+        delay: 350,
+      });
+</script></p>
+<p><audio controls autoplay loop hidden>
+      <source src="https://tsug0d.com/tetctf/nxlpsv.mp3" type="audio/mpeg">
+</audio></p>
+<p><link rel="stylesheet" type="text/css" href="https://tsug0d.com/tetctf/tsu_style.css"></p>
+<p><body background="https://tsug0d.com/tetctf/newyear.jpg" class="cenback"></p>
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <img class="w-75 mx-auto d-block" style="width: 500px;padding: 50px;padding-top: 14vh;" src="https://ctftime.org/media/team/tet.png"/>
+        <h3 class="text-center">
+            <p>A mini CTF aiming to "lì xì" onion/knowledge for vietnamese nắc cơ</p>
+        </h3>
+    </div>
+</div>
+	</div>
+
+	</main>
+
+	<footer class="footer">
+		<div class="container text-center">
+			<a href="https://ctfd.io">
+				<small class="text-muted">Powered by CTFd</small>
+			</a>
+		</div>
+	</footer>
+
+	<script src="/themes/core/static/js/vendor/jquery.min.js"></script>
+	<script src="/themes/core/static/js/vendor/markdown-it.min.js"></script>
+	<script src="/themes/core/static/js/vendor/bootstrap.bundle.min.js"></script>
+	<script src="/themes/core/static/js/vendor/howler.min.js"></script>
+	<script src="/themes/core/static/js/vendor/window-controller.js"></script>
+	<script src="/themes/core/static/js/style.js"></script>
+	<script src="/themes/core/static/js/utils.js"></script>
+	<script src="/themes/core/static/js/ezq.js"></script>
+	<script src="/themes/core/static/js/events.js"></script>
+	
+	
+
+	
+</body>
+</html>

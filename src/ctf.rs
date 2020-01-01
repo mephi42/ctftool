@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::io::ErrorKind;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -70,10 +70,33 @@ pub struct Service {
     pub url: Option<String>,
 }
 
+#[derive(Default, Serialize, Deserialize)]
+pub struct Credentials {
+    pub remotes: Vec<RemoteCredentials>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RemoteCredentials {
+    pub name: String,
+    pub cookies: String,
+}
+
 pub struct Context {
     pub ctf: CTF,
+    pub credentials: Credentials,
     pub root: PathBuf,
     pub path: Vec<String>,
+}
+
+fn load_credentials(root: &Path) -> Result<Credentials> {
+    match fs::read(root.join(".ctfcredentials")) {
+        Ok(bytes) => {
+            let str = &String::from_utf8(bytes)?;
+            Ok(serde_yaml::from_str(str)?)
+        }
+        Err(e) if e.kind() == ErrorKind::NotFound => Ok(Credentials::default()),
+        Err(e) => Err(Error::new(e)),
+    }
 }
 
 pub fn load() -> Result<Context> {
@@ -87,6 +110,7 @@ pub fn load() -> Result<Context> {
                 path.reverse();
                 break Ok(Context {
                     ctf,
+                    credentials: load_credentials(&dir)?,
                     root: dir,
                     path,
                 });
@@ -120,9 +144,19 @@ fn ignore(ctf: &CTF) -> Vec<String> {
     result
 }
 
-pub fn store(ctf: &CTF) -> Result<()> {
-    fs::write(".gitignore", ignore(&ctf).join("\n"))?;
-    fs::write(".ctf", serde_yaml::to_string(&ctf)?)?;
+pub fn store(context: &Context) -> Result<()> {
+    fs::write(
+        context.root.join(".gitignore"),
+        ignore(&context.ctf).join("\n"),
+    )?;
+    fs::write(
+        context.root.join(".ctf"),
+        serde_yaml::to_string(&context.ctf)?,
+    )?;
+    fs::write(
+        context.root.join(".ctfcredentials"),
+        serde_yaml::to_string(&context.credentials)?,
+    )?;
     Ok(())
 }
 
@@ -319,4 +353,17 @@ pub fn find_remote_mut<'a>(ctf: &'a mut CTF, name: &str) -> Result<&'a mut Remot
         .iter_mut()
         .find(|remote| remote.name == name)
         .ok_or_else(|| anyhow!("Remote {} does not exist", name))
+}
+
+pub fn set_cookies(credentials: &mut Credentials, remote_name: String, cookies: String) {
+    for remote in &mut credentials.remotes {
+        if remote.name == remote_name {
+            remote.cookies = cookies;
+            return;
+        }
+    }
+    credentials.remotes.push(RemoteCredentials {
+        name: remote_name,
+        cookies,
+    });
 }

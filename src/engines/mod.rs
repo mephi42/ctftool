@@ -3,6 +3,7 @@ use std::future::Future;
 use std::pin::Pin;
 
 use anyhow::{anyhow, Result};
+use cookie_store::CookieStore;
 use lazy_static::lazy_static;
 
 use crate::ctf;
@@ -10,10 +11,30 @@ use crate::ctf;
 pub mod ctfd;
 pub mod watevr;
 
+type DetectResult<'a> = Pin<Box<dyn Future<Output = Result<()>> + 'a>>;
+type LoginResult<'a> = Pin<Box<dyn Future<Output = Result<CookieStore>> + 'a>>;
 type FetchResult<'a> = Pin<Box<dyn Future<Output = Result<ctf::CTF>> + 'a>>;
 
 pub trait Engine {
-    fn fetch<'a>(&self, remote: &'a ctf::Remote) -> FetchResult<'a>;
+    fn detect<'a>(
+        &self,
+        client: &'a reqwest::Client,
+        remote: &'a ctf::Remote,
+        main_page: &'a str,
+    ) -> DetectResult<'a>;
+    fn login<'a>(
+        &self,
+        client: &'a reqwest::Client,
+        remote: &'a ctf::Remote,
+        login: &'a str,
+        password: &'a str,
+    ) -> LoginResult<'a>;
+    fn fetch<'a>(
+        &self,
+        client: &'a reqwest::Client,
+        cookie_store: &'a CookieStore,
+        remote: &'a ctf::Remote,
+    ) -> FetchResult<'a>;
 }
 
 lazy_static! {
@@ -38,27 +59,20 @@ pub fn get_engine(name: &str) -> Result<&(dyn Engine + Sync)> {
         .ok_or_else(|| anyhow!("Unsupported engine: {}", name))
 }
 
-pub async fn fetch_auto(remote: &ctf::Remote) -> Result<(String, ctf::CTF)> {
-    let mut result: Result<(String, ctf::CTF)> =
-        Err(anyhow!("Could not detect engine used by {}", remote.name));
+pub async fn detect(client: &reqwest::Client, remote: &ctf::Remote) -> Result<String> {
+    let main_page_response = client.execute(client.get(&remote.url).build()?).await?;
+    main_page_response.error_for_status_ref()?;
+    let main_page = main_page_response.text().await?;
     let mut errors = vec![];
     for (name, engine) in ENGINES.iter() {
-        match engine.fetch(&remote).await {
-            Ok(fetched) => match &result {
-                Ok((_, best_fetched)) => {
-                    if fetched.challenges.len() > best_fetched.challenges.len() {
-                        result = Ok(((*name).to_owned(), fetched));
-                    }
-                }
-                Err(_) => result = Ok(((*name).to_owned(), fetched)),
-            },
-            Err(e) => errors.push((name, e)),
+        if let Err(e) = engine.detect(client, remote, &main_page).await {
+            errors.push((name, e));
+        } else {
+            return Ok((*name).to_string());
         }
     }
-    if result.is_err() {
-        for (name, e) in errors {
-            eprintln!("{}: {}", name, e);
-        }
+    for (name, e) in errors {
+        eprintln!("{}: {}", name, e);
     }
-    result
+    Err(anyhow!("Could not detect engine used by {}", remote.name))
 }

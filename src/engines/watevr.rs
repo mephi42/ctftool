@@ -1,11 +1,12 @@
-use futures::future::FutureExt;
+use cookie_store::CookieStore;
+use futures::future::{self, FutureExt};
 use serde::Deserialize;
-use url::Url;
 
 use anyhow::{anyhow, Result};
 
 use crate::ctf;
 use crate::engines;
+use crate::http::{self, RequestBuilderExt};
 
 #[derive(Deserialize)]
 struct Watsup {
@@ -27,13 +28,26 @@ struct Challenge {
     title: String,
 }
 
-pub async fn fetch(remote: &ctf::Remote) -> Result<ctf::CTF> {
+async fn detect(_client: &reqwest::Client, _remote: &ctf::Remote, main_page: &str) -> Result<()> {
+    let needle = "watevrCTF";
+    if main_page.contains(needle) {
+        Ok(())
+    } else {
+        Err(anyhow!("Main page does not contain \"{}\"", needle))
+    }
+}
+
+async fn fetch(
+    client: &reqwest::Client,
+    cookie_store: &CookieStore,
+    remote: &ctf::Remote,
+) -> Result<ctf::CTF> {
     let mut ctf = ctf::CTF::default();
-    let mut url = Url::parse(&remote.url)?;
-    url.path_segments_mut()
-        .map_err(|_| anyhow!("cannot be base"))?
-        .extend(&["api", "watsup"]);
-    let response = reqwest::get(&url.into_string()).await?;
+    let url = http::build_url(&remote.url, &["api", "watsup"])?;
+    let request = client
+        .get(&url.to_string())
+        .add_cookie_header(&url, &cookie_store);
+    let response = client.execute(request.build()?).await?;
     response.error_for_status_ref()?;
     let watsup: Watsup = response.json().await?;
     for challenge in watsup.challenges {
@@ -82,7 +96,31 @@ Description: {}",
 pub struct WatevrEngine {}
 
 impl engines::Engine for WatevrEngine {
-    fn fetch<'a>(&self, remote: &'a ctf::Remote) -> engines::FetchResult<'a> {
-        fetch(remote).boxed()
+    fn detect<'a>(
+        &self,
+        client: &'a reqwest::Client,
+        remote: &'a ctf::Remote,
+        main_page: &'a str,
+    ) -> engines::DetectResult<'a> {
+        detect(client, remote, main_page).boxed()
+    }
+
+    fn login<'a>(
+        &self,
+        _client: &'a reqwest::Client,
+        _remote: &'a ctf::Remote,
+        _login: &'a str,
+        _password: &'a str,
+    ) -> engines::LoginResult<'a> {
+        future::ok(CookieStore::default()).boxed()
+    }
+
+    fn fetch<'a>(
+        &self,
+        client: &'a reqwest::Client,
+        cookie_store: &'a CookieStore,
+        remote: &'a ctf::Remote,
+    ) -> engines::FetchResult<'a> {
+        fetch(client, cookie_store, remote).boxed()
     }
 }

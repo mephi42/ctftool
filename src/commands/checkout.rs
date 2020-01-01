@@ -234,7 +234,7 @@ pub async fn run(checkout: Checkout) -> Result<()> {
             Err(e) => result = Err(e),
         }
     }
-    git::commit(&context.ctf, "Checkout")?;
+    git::commit(&context, "Checkout")?;
     progress_join_result??;
     result
 }
