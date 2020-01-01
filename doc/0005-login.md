@@ -20,7 +20,7 @@ ask for login and password, perform engine detection if necessary, perform the l
 # Reference-level explanation
 [reference-level-explanation]: #reference-level-explanation
 
-`ctf fetch` persists cookies in the `.ctfcredentials` file. This file is not tracked in git.
+`ctf login` persists cookies in the `.ctfcredentials` file. This file is not tracked in git.
 
 # Drawbacks
 [drawbacks]: #drawbacks
@@ -31,7 +31,7 @@ If cookies stored on disk are stolen, they may be used to impersonate the respec
 [rationale-and-alternatives]: #rationale-and-alternatives
 
 Credentials themselves could be stored in `.ctfcredentials` instead of cookies. However, credentials are more sensitive
-than cookies; also, this avoids having to authenticate on each `ctf fetch`.
+than cookies; also, storing cookies avoids having to authenticate on each `ctf fetch`.
 
 # Prior art
 [prior-art]: #prior-art

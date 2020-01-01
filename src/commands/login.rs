@@ -1,7 +1,8 @@
 use std::io::{stdin, stdout, Write};
 
-use anyhow::{anyhow, Result};
 use clap::Clap;
+
+use anyhow::{anyhow, Result};
 
 use crate::ctf;
 use crate::engines;

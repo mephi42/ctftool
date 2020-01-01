@@ -1,7 +1,7 @@
 use clap::Clap;
+use cookie_store::CookieStore;
 
 use anyhow::{anyhow, Result};
-use cookie_store::CookieStore;
 
 use crate::ctf;
 use crate::engines;

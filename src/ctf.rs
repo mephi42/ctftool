@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use serde_yaml;
 use url::Url;
 
-use anyhow::{anyhow, Error, Result};
+use anyhow::{anyhow, bail, Error, Result};
 use lazy_static::lazy_static;
 
 #[derive(Default, Serialize, Deserialize)]
@@ -202,6 +202,61 @@ pub fn binary_from_url(url: &str) -> Result<Binary> {
     })
 }
 
+fn url_regex() -> Result<Regex> {
+    let result = Regex::new(r#"https?://[^\s"]+"#)?;
+    Ok(result)
+}
+
+fn extract_google_drive_id(url: &str) -> Result<Option<String>> {
+    let regexes = vec![
+        Regex::new(r#"^https://drive.google.com/file/d/(.+)/view$"#)?,
+        Regex::new(r#"^https://drive.google.com/open\?id=(.+)$"#)?,
+    ];
+    for regex in regexes {
+        let id = regex.captures(&url).map(|cap| cap[1].to_string());
+        if id.is_some() {
+            return Ok(id);
+        }
+    }
+    Ok(None)
+}
+
+async fn resolve_google_drive_binary(client: &reqwest::Client, id: &str) -> Result<Binary> {
+    let initial_url = format!("https://drive.google.com/uc?export=download&id={}", id);
+    let mut url = initial_url.clone();
+    loop {
+        let response = client.execute(client.get(&url).build()?).await?;
+        if response.status() == 302 {
+            url = match response.headers().get(reqwest::header::LOCATION) {
+                Some(location) => location.to_str()?.to_string(),
+                None => bail!("302, but no Location"),
+            };
+            continue;
+        }
+        response.error_for_status_ref()?;
+        let content_disposition = match response.headers().get(reqwest::header::CONTENT_DISPOSITION)
+        {
+            Some(location) => location.to_str()?,
+            None => bail!("No Content-Disposition"),
+        };
+        let content_disposition_regex = Regex::new(r#"^attachment;filename="([^"]+)";"#)?;
+        if let Some(file_name) = content_disposition_regex
+            .captures(&content_disposition)
+            .map(|cap| cap[1].to_string())
+        {
+            break Ok(Binary {
+                name: file_name,
+                alternatives: vec![BinaryAlternative {
+                    name: "orig".into(),
+                    url: Some(initial_url),
+                    checksum: None,
+                }],
+            });
+        }
+        bail!("No attachment in Content-Disposition");
+    }
+}
+
 pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
     let mut services = Vec::new();
     let nc_regex = Regex::new(r#"nc ([^ ]+) (\d+)"#)?;
@@ -212,6 +267,23 @@ pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
         });
     }
     Ok(services)
+}
+
+pub async fn binaries_from_description(
+    client: &reqwest::Client,
+    description: &str,
+) -> Result<Vec<Binary>> {
+    let mut binaries = Vec::new();
+    let urls: Vec<String> = url_regex()?
+        .captures_iter(&description)
+        .map(|cap| cap[0].to_string())
+        .collect();
+    for url in urls {
+        if let Some(id) = extract_google_drive_id(&url)? {
+            binaries.push(resolve_google_drive_binary(client, &id).await?);
+        }
+    }
+    Ok(binaries)
 }
 
 fn merge_binary_alternatives(

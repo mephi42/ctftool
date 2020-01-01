@@ -145,11 +145,13 @@ async fn fetch_challenge(
     }
     let category = ctf::best_category(&[challenge.category]);
     let title = ctf::sanitize_title(&challenge.name);
+    let binaries =
+        ctf::binaries_from_description(&client, &challenge_details.data.description).await?;
     let services = ctf::services_from_description(&challenge_details.data.description)?;
     Ok(ctf::Challenge {
         name: format!("{}-{}", category, title),
         description: challenge_details.data.description,
-        binaries: vec![],
+        binaries,
         services,
     })
 }
