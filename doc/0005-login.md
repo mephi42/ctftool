@@ -4,7 +4,7 @@
 # Summary
 [summary]: #summary
 
-`ctf login` command logs into CTF website and saves the cookies.
+`ctf login` logs into CTF website and saves the cookies.
 
 # Motivation
 [motivation]: #motivation

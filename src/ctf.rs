@@ -46,6 +46,7 @@ pub struct Challenge {
 pub struct Binary {
     pub name: String,
     pub alternatives: Vec<BinaryAlternative>,
+    pub default_alternative: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -116,11 +117,20 @@ pub fn load() -> Result<Context> {
                 });
             }
             Err(e) if e.kind() == ErrorKind::NotFound => {
-                if !dir.pop() {
-                    break Err(anyhow!(
-                        "No .ctf file in the current or any of the parent directories"
-                    ));
+                match dir.file_name() {
+                    Some(component) => path.push(
+                        component
+                            .to_str()
+                            .ok_or_else(|| anyhow!("Non-UTF-8 path"))?
+                            .to_owned(),
+                    ),
+                    None => {
+                        break Err(anyhow!(
+                            "No .ctf file in the current or any of the parent directories"
+                        ))
+                    }
                 }
+                dir.pop();
             }
             Err(e) => break Err(Error::new(e)),
         }
@@ -133,6 +143,9 @@ fn ignore(ctf: &CTF) -> Vec<String> {
         result.push(format!("!/{}/", challenge.name));
         result.push(format!("/{}/*", challenge.name));
         for binary in &challenge.binaries {
+            if binary.default_alternative.is_some() {
+                result.push(format!("!/{}/{}", challenge.name, binary.name));
+            }
             for alternative in &binary.alternatives {
                 result.push(format!(
                     "!/{}/{}.{}",
@@ -147,7 +160,7 @@ fn ignore(ctf: &CTF) -> Vec<String> {
 pub fn store(context: &Context) -> Result<()> {
     fs::write(
         context.root.join(".gitignore"),
-        ignore(&context.ctf).join("\n"),
+        ignore(&context.ctf).join("\n") + "\n",
     )?;
     fs::write(
         context.root.join(".ctf"),
@@ -199,6 +212,7 @@ pub fn binary_from_url(url: &str) -> Result<Binary> {
             url: Some(url.into()),
             checksum: None,
         }],
+        default_alternative: None,
     })
 }
 
@@ -251,6 +265,7 @@ async fn resolve_google_drive_binary(client: &reqwest::Client, id: &str) -> Resu
                     url: Some(initial_url),
                     checksum: None,
                 }],
+                default_alternative: None,
             });
         }
         bail!("No attachment in Content-Disposition");
@@ -386,12 +401,15 @@ pub fn find_binary<'a>(challenge: &'a Challenge, name: &str) -> Result<&'a Binar
         .ok_or_else(|| anyhow!("No such binary: {}", name))
 }
 
-pub fn find_binary_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Result<&'a mut Binary> {
+pub fn try_find_binary_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Option<&'a mut Binary> {
     challenge
         .binaries
         .iter_mut()
         .find(|binary| binary.name == name)
-        .ok_or_else(|| anyhow!("No such binary: {}", name))
+}
+
+pub fn find_binary_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Result<&'a mut Binary> {
+    try_find_binary_mut(challenge, name).ok_or_else(|| anyhow!("No such binary: {}", name))
 }
 
 pub fn find_alternative<'a>(binary: &'a Binary, name: &str) -> Result<&'a BinaryAlternative> {
@@ -402,15 +420,21 @@ pub fn find_alternative<'a>(binary: &'a Binary, name: &str) -> Result<&'a Binary
         .ok_or_else(|| anyhow!("No such alternative: {}", name))
 }
 
-pub fn find_alternative_mut<'a>(
+pub fn try_find_alternative_mut<'a>(
     binary: &'a mut Binary,
     name: &str,
-) -> Result<&'a mut BinaryAlternative> {
+) -> Option<&'a mut BinaryAlternative> {
     binary
         .alternatives
         .iter_mut()
         .find(|alternative| alternative.name == name)
-        .ok_or_else(|| anyhow!("No such alternative: {}", name))
+}
+
+pub fn find_alternative_mut<'a>(
+    binary: &'a mut Binary,
+    name: &str,
+) -> Result<&'a mut BinaryAlternative> {
+    try_find_alternative_mut(binary, name).ok_or_else(|| anyhow!("No such alternative: {}", name))
 }
 
 pub fn find_remote<'a>(ctf: &'a CTF, name: &str) -> Result<&'a Remote> {
@@ -438,4 +462,33 @@ pub fn set_cookies(credentials: &mut Credentials, remote_name: String, cookies: 
         name: remote_name,
         cookies,
     });
+}
+
+pub fn default_alternative_path(root: &Path, challenge_name: &str, binary_name: &str) -> PathBuf {
+    root.to_path_buf().join(challenge_name).join(binary_name)
+}
+
+pub fn alternative_path(
+    root: &Path,
+    challenge_name: &str,
+    binary_name: &str,
+    alternative_name: &str,
+) -> PathBuf {
+    root.to_path_buf()
+        .join(challenge_name)
+        .join(format!("{}.{}", binary_name, alternative_name))
+}
+
+pub fn set_default_alternative(
+    root: &Path,
+    challenge_name: &str,
+    binary: &mut Binary,
+    alternative_name: &str,
+) -> Result<()> {
+    std::fs::copy(
+        alternative_path(root, challenge_name, &binary.name, alternative_name),
+        default_alternative_path(root, challenge_name, &binary.name),
+    )?;
+    binary.default_alternative = Some(alternative_name.to_owned());
+    Ok(())
 }

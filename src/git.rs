@@ -7,8 +7,16 @@ use crate::subprocess::check_call;
 
 pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
     ctf::store(context)?;
-    check_call(Command::new("git").args(&["add", "."]))?;
-    check_call(Command::new("git").args(&["commit", "-m", message]))?;
+    check_call(
+        Command::new("git")
+            .args(&["add", "."])
+            .current_dir(&context.root),
+    )?;
+    check_call(
+        Command::new("git")
+            .args(&["commit", "-m", message])
+            .current_dir(&context.root),
+    )?;
     Ok(())
 }
 
