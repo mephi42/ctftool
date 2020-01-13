@@ -1,3 +1,4 @@
+pub mod binary;
 pub mod checkout;
 pub mod fetch;
 pub mod init;

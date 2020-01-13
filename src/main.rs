@@ -6,6 +6,7 @@ pub mod ctf;
 pub mod engines;
 pub mod git;
 pub mod http;
+pub mod option;
 pub mod subprocess;
 
 /// Automates all the boring CTF stuff
@@ -33,9 +34,13 @@ enum SubCommand {
     #[clap(name = "checkout")]
     Checkout(commands::checkout::Checkout),
 
-    /// Log into CTF
+    /// Logs into a CTF
     #[clap(name = "login")]
     Login(commands::login::Login),
+
+    /// Manages challenge binaries
+    #[clap(name = "binary")]
+    Binary(commands::binary::Binary),
 }
 
 #[tokio::main]
@@ -47,5 +52,6 @@ async fn main() -> Result<()> {
         SubCommand::Fetch(fetch) => commands::fetch::run(fetch).await,
         SubCommand::Checkout(checkout) => commands::checkout::run(checkout).await,
         SubCommand::Login(login) => commands::login::run(login).await,
+        SubCommand::Binary(binary) => commands::binary::run(binary).await,
     }
 }
