@@ -191,3 +191,9 @@ async fn test_fetch_ctfd() -> Result<()> {
     ctftool::init_logging();
     test_fetch("ctfd").await
 }
+
+#[tokio::main]
+#[test]
+async fn test_fetch_insomnihack() -> Result<()> {
+    test_fetch("insomnihack").await
+}

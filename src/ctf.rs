@@ -1,8 +1,8 @@
-use std::collections::HashMap;
 use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
+use cookie_store::CookieStore;
 use log::warn;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -10,7 +10,6 @@ use serde_yaml;
 use url::Url;
 
 use anyhow::{anyhow, bail, Error, Result};
-use lazy_static::lazy_static;
 
 use crate::http;
 
@@ -136,7 +135,7 @@ pub fn load(mut dir: PathBuf) -> Result<Context> {
                     None => {
                         break Err(anyhow!(
                             "No .ctf file in the current or any of the parent directories"
-                        ))
+                        ));
                     }
                 }
                 dir.pop();
@@ -182,24 +181,61 @@ pub fn store(context: &Context) -> Result<()> {
     Ok(())
 }
 
-lazy_static! {
-    static ref CATEGORY_PRIORITIES: HashMap<&'static str, u32> = {
-        let mut m = HashMap::new();
-        m.insert("crypto", 0);
-        m.insert("web", 1);
-        m.insert("forensics", 2);
-        m.insert("pwn", 3);
-        m.insert("reverse", 4);
-        m
-    };
+enum Category {
+    Crypto,
+    Web,
+    Forensics,
+    Pwn,
+    Reverse,
+    Programming,
+    Misc,
 }
 
-pub fn best_category(categories: &[String]) -> String {
+impl Category {
+    fn parse(s: &str) -> Self {
+        match s.to_lowercase().as_str() {
+            "cry" | "crypto" => Category::Crypto,
+            "web" => Category::Web,
+            "for" | "forensics" => Category::Forensics,
+            "pwn" => Category::Pwn,
+            "rev" | "reverse" => Category::Reverse,
+            "ppc" => Category::Programming,
+            _ => Category::Misc,
+        }
+    }
+
+    fn priority(&self) -> i32 {
+        match self {
+            Category::Crypto => 0,
+            Category::Web => 1,
+            Category::Forensics => 2,
+            Category::Pwn => 3,
+            Category::Reverse => 4,
+            Category::Programming => 5,
+            Category::Misc => 999,
+        }
+    }
+
+    fn name(&self) -> &'static str {
+        match self {
+            Category::Crypto => "cry",
+            Category::Web => "web",
+            Category::Forensics => "for",
+            Category::Pwn => "pwn",
+            Category::Reverse => "rev",
+            Category::Programming => "ppc",
+            Category::Misc => "misc",
+        }
+    }
+}
+
+pub fn best_category(categories: &[String]) -> &'static str {
     categories
         .iter()
-        .map(|category| category.to_lowercase())
-        .min_by_key(|category| CATEGORY_PRIORITIES.get(category.as_str()).unwrap_or(&999))
-        .unwrap_or_else(|| "misc".to_owned())
+        .map(|s| Category::parse(s))
+        .min_by_key(Category::priority)
+        .map(|c| c.name())
+        .unwrap_or_else(|| Category::Misc.name())
 }
 
 pub fn sanitize_title(title: &str) -> String {
@@ -226,7 +262,7 @@ pub fn binary_from_url(url: &str) -> Result<Binary> {
 }
 
 fn url_regex() -> Result<Regex> {
-    let result = Regex::new(r#"https?://[^\s"]+"#)?;
+    let result = Regex::new(r#"https?://[^\s"<]+"#)?;
     Ok(result)
 }
 
@@ -297,13 +333,16 @@ pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
 
 pub async fn binaries_from_description(
     client: &http::Client,
+    _cookie_store: &CookieStore,
     description: &str,
 ) -> Result<Vec<Binary>> {
     let mut binaries = Vec::new();
-    let urls: Vec<String> = url_regex()?
+    let mut urls: Vec<String> = url_regex()?
         .captures_iter(&description)
         .map(|cap| cap[0].to_string())
         .collect();
+    urls.sort();
+    urls.dedup();
     for url in urls {
         if let Some(id) = extract_google_drive_id(&url)? {
             match resolve_google_drive_binary(client, &id).await {

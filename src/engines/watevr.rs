@@ -2,7 +2,7 @@ use cookie_store::CookieStore;
 use futures::future::{self, FutureExt};
 use serde::Deserialize;
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 
 use crate::ctf;
 use crate::engines;
@@ -26,15 +26,6 @@ struct Challenge {
     #[serde(default)]
     file_urls: Vec<String>,
     title: String,
-}
-
-async fn detect(_client: &http::Client, _remote: &ctf::Remote, main_page: &str) -> Result<()> {
-    let needle = "watevrCTF";
-    if main_page.contains(needle) {
-        Ok(())
-    } else {
-        Err(anyhow!("Main page does not contain \"{}\"", needle))
-    }
 }
 
 async fn fetch(
@@ -98,11 +89,11 @@ pub struct WatevrEngine {}
 impl engines::Engine for WatevrEngine {
     fn detect<'a>(
         &self,
-        client: &'a http::Client,
-        remote: &'a ctf::Remote,
+        _client: &'a http::Client,
+        _remote: &'a ctf::Remote,
         main_page: &'a str,
     ) -> engines::DetectResult<'a> {
-        detect(client, remote, main_page).boxed()
+        engines::detect_needle(main_page, "watevrCTF").boxed()
     }
 
     fn login<'a>(
