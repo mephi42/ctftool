@@ -1,0 +1,139 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="insomnihack">
+    <meta name="copyright" content="insomnihack" />
+    <link rel='shortcut icon' type='image/x-icon' href="https://storage.googleapis.com/insomnihack/static/img/favicon.ico" />
+
+    <title>Insomni'hack Teaser - Insomni'hack Teaser</title>
+
+    <link href="https://storage.googleapis.com/insomnihack/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://storage.googleapis.com/insomnihack/static/css/flags.css" rel="stylesheet" />
+    <link href="https://storage.googleapis.com/insomnihack/static/css/insomnihack.css?5" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/jquery.dd.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/popper.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/jquery.ajax.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/reactjs/react.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/reactjs/react-dom.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/lodash.core.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/insomnihack.js"></script>
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+    
+        countdown(1579338000, document.getElementById("countdown_counter"), "CTF starts in ", "CTF started!");
+    
+      });
+    </script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top" id="menu">
+      <a href="/" class="d-none d-lg-block"><img id="logo" src="https://storage.googleapis.com/insomnihack/static/img/insomnihack.png" /></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-center" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/"><i class="fa fa-home"></i> <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/challenges/">Challenges</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/scoreboard ">Scoreboard</a>
+          </li>
+          
+        </ul>
+        <ul class="navbar-nav d-none d-md-block" id="countdown">
+          <li class="nav-item">
+            <a id="countdown_counter"></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav mr-right">
+        
+          <li class="nav-item">
+            <a class="nav-link" href="/accounts/login/">Login</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/accounts/register/">Register</a>
+          </li>
+          
+        
+        </ul>
+      </div>
+    </nav>
+
+    <div id="skull" style="background-image:url('https://storage.googleapis.com/insomnihack/static/img/insoskull.png');"></div>
+    <div class="container">
+
+    
+    
+
+<div class="row">
+<div class="col-xl-3"></div>
+<div class="col-xl-6 default_box">
+
+  <h2>Insomni'hack Teaser 2020</h2>
+  <div>
+    Greetings and welcome to the Insomni'hack teaser!
+    <br>
+    <br>
+    The teaser will start on <code>January 18th at 9am UTC (10:00 CET)</code> and will last <code>24 hours</code>.
+    <br>
+    <br>
+	Categories will be <code>Crypto</code>, <code>Forensic</code>, <code>Mobile</code>, <code>Reverse</code> and <code>Web</code>.
+    <br>
+    There will be no bonus points so the final ranking will be determined based on the time of the last challenge solved, ie first come first served.
+    <br>
+    Point of contacts in order of preference :
+    <ol>
+        <li><strong><i class="fa fa-comments"></i> IRC:</strong> <code>#insomnihack</code> on freenode</li>
+        <li><strong><i class="fa fa-at"></i> Mail:</strong> <a href="/cdn-cgi/l/email-protection#385b4c5e7851564b5755565150595b53165b50"><span class="__cf_email__" data-cfemail="d0b3a4b690b9bea3bfbdbeb9b8b1b3bbfeb3b8">[email&#160;protected]</span></a></li>
+        <li><strong><i class="fa fa-twitter"></i> Twitter :</strong> <a href="https://twitter.com/1ns0mn1h4ck">https://twitter.com/1ns0mn1h4ck</a></li>
+    </ol>
+    <strong><i class="fa fa-trophy"></i> Prizes:</strong>
+    <ul>
+        <li>We will cover hotel (3 nights) and conference tickets for Insomni'hack 2020 for the first 3 teams.</li>
+        <li>The 4th, 5th and 6th teams will receive tickets for the conference.</li>
+        <li>The conference will take place on March 19-20 2020 at the Palexpo conference center in Geneva.</li>
+        <li>The CTF will run during the evening and the night of the 20th and is free for everyone to participate in.</li>
+    </ul>
+    <strong><i class="fa fa-legal"></i> Rules:</strong>
+    <ul>
+        <li>Team size is not restricted for the teaser, but only 8 participants per team will be allowed at the main CTF event. We will provide 4 rooms for a total of up to 8 people for the first 3 qualifying teams.</li>
+        <li>It is of course forbidden to :
+        <ul>
+            <li>share flags</li>
+            <li>break or destruct a challenge by eg removing the flag</li>
+            <li>attack the scoring system</li>
+        </ul>
+        </li>
+    </ul>
+    We reserve the rights to disqualify any cheating team.
+    <br>
+    <br>
+    HF&amp;GL
+  </div>
+</div>
+<div class="col-xl-3"></div>
+</div>
+
+
+    </div>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>

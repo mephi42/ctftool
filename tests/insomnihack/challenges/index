@@ -1,0 +1,138 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="insomnihack">
+    <meta name="copyright" content="insomnihack" />
+    <link rel='shortcut icon' type='image/x-icon' href="https://storage.googleapis.com/insomnihack/static/img/favicon.ico" />
+
+    <title>Challenges - Insomni'hack Teaser</title>
+
+    <link href="https://storage.googleapis.com/insomnihack/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://storage.googleapis.com/insomnihack/static/css/flags.css" rel="stylesheet" />
+    <link href="https://storage.googleapis.com/insomnihack/static/css/insomnihack.css?5" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/jquery.dd.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/popper.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/jquery.ajax.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/reactjs/react.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/reactjs/react-dom.min.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/lodash.core.js"></script>
+    <script type="text/javascript" src="https://storage.googleapis.com/insomnihack/static/js/insomnihack.js"></script>
+    
+    <script type="text/javascript">
+      $(document).ready(function() {
+    
+        countdown(1579424400, document.getElementById("countdown_counter"), "", "CTF is over!");
+	
+      });
+    </script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top" id="menu">
+      <a href="/" class="d-none d-lg-block"><img id="logo" src="https://storage.googleapis.com/insomnihack/static/img/insomnihack.png" /></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-center" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/"><i class="fa fa-home"></i> <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/challenges/">Challenges</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/scoreboard ">Scoreboard</a>
+          </li>
+          
+        </ul>
+        <ul class="navbar-nav d-none d-md-block" id="countdown">
+          <li class="nav-item">
+            <a id="countdown_counter"></a>
+          </li>
+        </ul>
+        <ul class="navbar-nav mr-right">
+        
+          <li class="nav-item">
+            <a class="nav-link" href="/profile/">More Smoked Leet Chicken</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/accounts/logout/">Logout</a>
+          </li>
+        
+        </ul>
+      </div>
+    </nav>
+
+    <div id="skull" style="background-image:url('https://storage.googleapis.com/insomnihack/static/img/insoskull.png');"></div>
+    <div class="container">
+
+    
+    
+<script type="text/javascript">
+  $(document).ready(function() {
+    render_news("/news/all?t=1579424402", document.getElementById('news'));
+
+    render_challenge_list("/challenges/list?t=1579423908",
+                          "/challenges/solved",
+                          document.getElementById('chall_list'));
+    render_partial_scoreboard("/scoreboard/top/json?t=1579465984", 569, document.getElementById('partial_scoreboard'));
+
+  });
+</script>
+
+<div id="challengeModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="challengeModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="challengeModalTitle">Challenge</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="challengeModalBody" class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col col-12 col-lg-9">
+    <fieldset id="news_box">
+        <legend><i class="fa fa-bullhorn"></i> News</legend>
+        <div id="news">
+          <h6><i class="fa fa-refresh fa-spin"></i> Loading news</h6>
+        </div>
+    </fieldset>
+   
+     <div id="chall_list">
+        <h4 class="no_challs_yet"><i class="fa fa-refresh fa-spin"></i> Loading challenges</h4>
+     </div>
+   
+  </div>
+
+  <div id="score_top" class="col col-lg-3 d-none d-lg-block">
+    <div class="score_top">
+      <h3><i class="fa fa-trophy"></i> Top teams</h3>
+      <div id="partial_scoreboard">
+        <h6><i class="fa fa-refresh fa-spin"></i> Loading top teams</h6>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+    </div>
+  </body>
+</html>

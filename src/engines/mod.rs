@@ -11,6 +11,7 @@ use crate::ctf;
 use crate::http;
 
 pub mod ctfd;
+pub mod insomnihack;
 pub mod watevr;
 
 type DetectResult<'a> = Pin<Box<dyn Future<Output = Result<()>> + 'a>>;
@@ -47,6 +48,10 @@ lazy_static! {
             Box::new(ctfd::CtfdEngine {}) as Box<dyn Engine + Sync>,
         );
         m.insert(
+            "insonmihack",
+            Box::new(insomnihack::InsomniHackEngine {}) as Box<dyn Engine + Sync>,
+        );
+        m.insert(
             "watevr",
             Box::new(watevr::WatevrEngine {}) as Box<dyn Engine + Sync>,
         );
@@ -77,4 +82,12 @@ pub async fn detect(client: &http::Client, remote: &ctf::Remote) -> Result<Strin
         eprintln!("{}: {}", name, e);
     }
     Err(anyhow!("Could not detect engine used by {}", remote.name))
+}
+
+pub async fn detect_needle(main_page: &str, needle: &str) -> Result<()> {
+    if main_page.contains(needle) {
+        Ok(())
+    } else {
+        Err(anyhow!("Main page does not contain \"{}\"", needle))
+    }
 }

@@ -12,27 +12,26 @@ use crate::engines;
 use crate::http::{self, CookieStoreExt, RequestBuilderExt};
 
 #[derive(Deserialize)]
-struct Challenges {
-    success: bool,
-    data: Vec<Challenge>,
+struct ChallengesResponse {
+    content: Vec<Challenge>,
 }
 
 #[derive(Deserialize)]
 struct Challenge {
-    id: i32,
-    name: String,
-    category: String,
+    url: String,
+}
+
+#[derive(Deserialize)]
+struct ChallengeDetailsResponse {
+    content: ChallengeDetails,
 }
 
 #[derive(Deserialize)]
 struct ChallengeDetails {
-    success: bool,
-    data: ChallengeDetailsData,
-}
-
-#[derive(Deserialize)]
-struct ChallengeDetailsData {
+    name: String,
+    categories: Vec<String>,
     description: String,
+    authors: Vec<String>,
 }
 
 async fn get_login_page(
@@ -47,7 +46,8 @@ async fn get_login_page(
     login_page_response.error_for_status_ref()?;
     cookie_store.store_cookies_from_response(&login_page_response, &login_page_url)?;
     let login_page = login_page_response.text().await?;
-    let nonce_regex = Regex::new(r#"<input type="hidden" name="nonce" value="([^"]+)">"#)?;
+    let nonce_regex =
+        Regex::new(r#"<input type="hidden" name="csrfmiddlewaretoken" value="([^"]+)">"#)?;
     let nonces: Vec<_> = nonce_regex.captures_iter(&login_page).collect();
     let nonce = match nonces.as_slice() {
         [capture] => capture[1].to_owned(),
@@ -64,8 +64,7 @@ fn is_login_ok(response: &reqwest::Response) -> Result<bool> {
         Some(location) => location.to_str()?,
         None => return Ok(false),
     };
-    let location_url = Url::parse(location)?;
-    Ok(location_url.path() == "/challenges")
+    Ok(location == "/challenges/")
 }
 
 async fn post_login_page(
@@ -77,13 +76,14 @@ async fn post_login_page(
     nonce: String,
 ) -> Result<()> {
     let login_request = client
-        .post(&login_page_url.to_string())
+        .post(login_page_url.as_str())
         .multipart(
             reqwest::multipart::Form::new()
-                .text("name", username)
+                .text("username", username)
                 .text("password", password)
-                .text("nonce", nonce),
+                .text("csrfmiddlewaretoken", nonce),
         )
+        .header(reqwest::header::REFERER, login_page_url.as_str())
         .add_cookie_header(login_page_url, cookie_store);
     let login_response = client.execute(login_request.build()?).await?;
     login_response.error_for_status_ref()?;
@@ -101,7 +101,7 @@ async fn login(
     password: &str,
 ) -> Result<CookieStore> {
     let mut cookie_store = CookieStore::default();
-    let login_page_url = http::build_url(&remote.url, &["login"])?;
+    let login_page_url = http::build_url(&remote.url, &["accounts", "login", ""])?;
     let nonce = get_login_page(client, &mut cookie_store, &login_page_url).await?;
     post_login_page(
         client,
@@ -115,72 +115,95 @@ async fn login(
     Ok(cookie_store)
 }
 
-async fn fetch_challenge(
+async fn fetch_challenges_t(
     client: &http::Client,
     cookie_store: &CookieStore,
     remote: &ctf::Remote,
-    challenge: Challenge,
-) -> Result<ctf::Challenge> {
-    let challenge_url = http::build_url(
-        &remote.url,
-        &["api", "v1", "challenges", &challenge.id.to_string()],
-    )?;
-    let challenge_request = client
-        .get(challenge_url.as_str())
-        .add_cookie_header(&challenge_url, &cookie_store);
-    let challenge_response = client.execute(challenge_request.build()?).await?;
-    challenge_response.error_for_status_ref()?;
-    let challenge_details: ChallengeDetails = challenge_response.json().await?;
-    if !challenge_details.success {
-        bail!("Could not retrieve challenge {}", challenge.id);
-    }
-    let category = ctf::best_category(&[challenge.category]);
-    let title = ctf::sanitize_title(&challenge.name);
-    let binaries =
-        ctf::binaries_from_description(&client, &cookie_store, &challenge_details.data.description)
-            .await?;
-    let services = ctf::services_from_description(&challenge_details.data.description)?;
-    Ok(ctf::Challenge {
-        name: format!("{}-{}", category, title),
-        description: challenge_details.data.description,
-        binaries,
-        services,
-    })
-}
-
-pub async fn fetch(
-    client: &http::Client,
-    cookie_store: &CookieStore,
-    remote: &ctf::Remote,
-) -> Result<ctf::CTF> {
-    let mut ctf = ctf::CTF::default();
-    let challenges_url = http::build_url(&remote.url, &["api", "v1", "challenges"])?;
+) -> Result<i32> {
+    let challenges_url = http::build_url(&remote.url, &["challenges", ""])?;
     let challenges_request = client
         .get(challenges_url.as_str())
         .add_cookie_header(&challenges_url, &cookie_store);
     let challenges_response = client.execute(challenges_request.build()?).await?;
     challenges_response.error_for_status_ref()?;
-    let challenges: Challenges = challenges_response.json().await?;
-    if !challenges.success {
-        bail!("Could not retrieve challenges");
-    }
-    for challenge in challenges.data {
+    let challenges = challenges_response.text().await?;
+    let t_regex = Regex::new(r#""/challenges/list\?t=(\d+)""#)?;
+    let ts: Vec<_> = t_regex.captures_iter(&challenges).collect();
+    let t = match ts.as_slice() {
+        [t] => t[1].to_owned(),
+        _ => bail!("Could not find challenges timestamp"),
+    };
+    Ok(t.parse()?)
+}
+
+async fn fetch_challenge(
+    client: &http::Client,
+    cookie_store: &CookieStore,
+    remote: &ctf::Remote,
+    challenge: &Challenge,
+) -> Result<ctf::Challenge> {
+    let challenge_url = http::build_url(&remote.url, challenge.url.split('/'))?;
+    let challenge_request = client
+        .get(challenge_url.as_str())
+        .add_cookie_header(&challenge_url, &cookie_store)
+        .header("X-Requested-With", "XMLHttpRequest");
+    let challenge_response = client.execute(challenge_request.build()?).await?;
+    challenge_response.error_for_status_ref()?;
+    let challenge: ChallengeDetailsResponse = challenge_response.json().await?;
+    let category = ctf::best_category(&challenge.content.categories);
+    let title = ctf::sanitize_title(&challenge.content.name);
+    let binaries =
+        ctf::binaries_from_description(&client, &cookie_store, &challenge.content.description)
+            .await?;
+    let services = ctf::services_from_description(&challenge.content.description)?;
+    Ok(ctf::Challenge {
+        name: format!("{}-{}", category, title),
+        description: format!(
+            "Categories: {}
+Authors: {}
+{}",
+            challenge.content.categories.join(", "),
+            challenge.content.authors.join(", "),
+            challenge.content.description,
+        ),
+        binaries,
+        services,
+    })
+}
+
+async fn fetch(
+    client: &http::Client,
+    cookie_store: &CookieStore,
+    remote: &ctf::Remote,
+) -> Result<ctf::CTF> {
+    let mut ctf = ctf::CTF::default();
+    let t = fetch_challenges_t(client, cookie_store, remote).await?;
+    let mut challenges_url = http::build_url(&remote.url, &["challenges", "list"])?;
+    challenges_url.set_query(Some(&format!("t={}", t)));
+    let challenges_request = client
+        .get(challenges_url.as_str())
+        .add_cookie_header(&challenges_url, &cookie_store)
+        .header("X-Requested-With", "XMLHttpRequest");
+    let challenges_response = client.execute(challenges_request.build()?).await?;
+    challenges_response.error_for_status_ref()?;
+    let challenges: ChallengesResponse = challenges_response.json().await?;
+    for challenge in challenges.content {
         ctf.challenges
-            .push(fetch_challenge(&client, &cookie_store, &remote, challenge).await?);
+            .push(fetch_challenge(&client, &cookie_store, &remote, &challenge).await?);
     }
     Ok(ctf)
 }
 
-pub struct CtfdEngine {}
+pub struct InsomniHackEngine {}
 
-impl engines::Engine for CtfdEngine {
+impl engines::Engine for InsomniHackEngine {
     fn detect<'a>(
         &self,
         _client: &'a http::Client,
         _remote: &'a ctf::Remote,
         main_page: &'a str,
     ) -> engines::DetectResult<'a> {
-        engines::detect_needle(main_page, "Powered by CTFd").boxed()
+        engines::detect_needle(main_page, "Insomni'hack").boxed()
     }
 
     fn login<'a>(

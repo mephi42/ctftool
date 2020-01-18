@@ -6,7 +6,11 @@ use regex::Regex;
 
 use crate::ctf;
 
-pub fn build_url(base: &str, path: &[&str]) -> Result<Url> {
+pub fn build_url<I>(base: &str, path: I) -> Result<Url>
+where
+    I: IntoIterator,
+    I::Item: AsRef<str>,
+{
     let mut url = Url::parse(base)?;
     url.path_segments_mut()
         .map_err(|_| anyhow!("cannot be base"))?
