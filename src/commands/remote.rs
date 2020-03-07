@@ -3,6 +3,7 @@ use clap::Clap;
 
 use crate::ctf;
 use crate::git;
+use std::path::PathBuf;
 
 #[derive(Clap)]
 pub struct Remote {
@@ -66,8 +67,8 @@ pub struct SetEngine {
     pub engine: String,
 }
 
-pub fn run(remote: Remote) -> Result<()> {
-    let mut context = ctf::load()?;
+pub fn run(remote: Remote, current_dir: PathBuf) -> Result<()> {
+    let mut context = ctf::load(current_dir)?;
     match remote.subcmd {
         SubCommand::Show(_show) => {
             for remote in context.ctf.remotes {

@@ -6,6 +6,7 @@ use anyhow::{anyhow, bail, Result};
 use crate::ctf;
 use crate::git;
 use crate::option;
+use std::path::PathBuf;
 
 #[derive(Clap)]
 pub struct Binary {
@@ -63,8 +64,8 @@ fn split(name: &str) -> Result<(&str, &str)> {
     }
 }
 
-pub async fn run(binary: Binary) -> Result<()> {
-    let mut context = ctf::load()?;
+pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
+    let mut context = ctf::load(current_dir)?;
     let challenge_name = match context.path.as_slice() {
         [challenge_name] => challenge_name,
         _ => bail!("Not in a challenge directory"),

@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::env;
 use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
@@ -100,9 +99,8 @@ fn load_credentials(root: &Path) -> Result<Credentials> {
     }
 }
 
-pub fn load() -> Result<Context> {
+pub fn load(mut dir: PathBuf) -> Result<Context> {
     let mut path = Vec::new();
-    let mut dir = env::current_dir()?;
     loop {
         match fs::read(dir.join(".ctf")) {
             Ok(bytes) => {

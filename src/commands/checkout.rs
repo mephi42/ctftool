@@ -171,9 +171,9 @@ fn checkout_challenge<'a>(
     checkouts
 }
 
-pub async fn run(checkout: Checkout) -> Result<()> {
+pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
     let progress = Arc::new(MultiProgress::new());
-    let mut context = ctf::load()?;
+    let mut context = ctf::load(current_dir)?;
     let mut checkouts = Vec::new();
     match context.path.as_slice() {
         [] => {

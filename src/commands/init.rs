@@ -1,5 +1,4 @@
-use std::env::current_dir;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use clap::Clap;
@@ -13,8 +12,7 @@ use crate::subprocess::check_call;
 #[derive(Clap)]
 pub struct Init {}
 
-pub fn run(_init: Init) -> Result<()> {
-    let root = current_dir()?;
+pub fn run(_init: Init, root: PathBuf) -> Result<()> {
     let ctf = ctf::CTF {
         name: Path::file_name(&root)
             .and_then({ |x| x.to_str() })
@@ -23,12 +21,12 @@ pub fn run(_init: Init) -> Result<()> {
         remotes: vec![],
         challenges: vec![],
     };
-    check_call(Command::new("git").args(&["init"]))?;
-    if git::get_option("user.name")?.is_none() {
-        git::set_option("user.name", "ctf")?;
+    check_call(Command::new("git").args(&["init"]).current_dir(&root))?;
+    if git::get_option(&root, "user.name")?.is_none() {
+        git::set_option(&root, "user.name", "ctf")?;
     }
-    if git::get_option("user.email")?.is_none() {
-        git::set_option("user.email", "ctf@localhost")?;
+    if git::get_option(&root, "user.email")?.is_none() {
+        git::set_option(&root, "user.email", "ctf@localhost")?;
     }
     let context = ctf::Context {
         ctf,
