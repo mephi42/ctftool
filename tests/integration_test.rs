@@ -5,11 +5,12 @@ use std::sync::atomic::{AtomicI32, Ordering};
 
 use assert_cmd::cargo::cargo_bin;
 use assert_cmd::Command;
+use ctftool::{ctf, git};
 use hyper::server::Server;
 use hyper::service::{make_service_fn, service_fn};
 use hyper::{Body, Request, Response};
 use lazy_static::lazy_static;
-use log::{error, info};
+use log::{info, warn};
 use tempdir::TempDir;
 
 use anyhow::{anyhow, Error, Result};
@@ -109,7 +110,7 @@ impl StaticServer {
                         let response = match StaticServer::handle_request(&root, req).await {
                             Ok(response) => response,
                             Err(e) => {
-                                error!("{}", e);
+                                warn!("{}", e);
                                 Response::builder()
                                     .status(500)
                                     .body(Body::from(""))
@@ -165,6 +166,13 @@ async fn test_fetch(engine: &str) -> Result<()> {
     let work_dir = WorkDir::new()?;
     main(&work_dir, &["init"]).await?;
     main(&work_dir, &["remote", "add", "origin", &url]).await?;
+    let mut ctx = ctf::load(work_dir.temp_dir.path().to_path_buf())?;
+    let remote = ctf::find_remote_mut(&mut ctx.ctf, "origin")?;
+    remote.rewrite_rules.push(ctf::RewriteRule {
+        regex: "^https://drive.google.com/".into(),
+        rep: format!("{}/drive.google.com/", url),
+    });
+    git::commit(&ctx, "Add rewrite rules")?;
     main(&work_dir, &["fetch"]).await?;
     server.shutdown().await?;
     Ok(())

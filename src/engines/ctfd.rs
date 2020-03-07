@@ -35,7 +35,7 @@ struct ChallengeDetailsData {
     description: String,
 }
 
-async fn detect(_client: &reqwest::Client, _remote: &ctf::Remote, main_page: &str) -> Result<()> {
+async fn detect(_client: &http::Client, _remote: &ctf::Remote, main_page: &str) -> Result<()> {
     let needle = "Powered by CTFd";
     if main_page.contains(needle) {
         Ok(())
@@ -45,7 +45,7 @@ async fn detect(_client: &reqwest::Client, _remote: &ctf::Remote, main_page: &st
 }
 
 async fn get_login_page(
-    client: &reqwest::Client,
+    client: &http::Client,
     cookie_store: &mut CookieStore,
     login_page_url: &Url,
 ) -> Result<String> {
@@ -78,7 +78,7 @@ fn is_login_ok(response: &reqwest::Response) -> Result<bool> {
 }
 
 async fn post_login_page(
-    client: &reqwest::Client,
+    client: &http::Client,
     cookie_store: &mut CookieStore,
     login_page_url: &Url,
     username: String,
@@ -104,7 +104,7 @@ async fn post_login_page(
 }
 
 async fn login(
-    client: &reqwest::Client,
+    client: &http::Client,
     remote: &ctf::Remote,
     username: &str,
     password: &str,
@@ -125,7 +125,7 @@ async fn login(
 }
 
 async fn fetch_challenge(
-    client: &reqwest::Client,
+    client: &http::Client,
     cookie_store: &CookieStore,
     remote: &ctf::Remote,
     challenge: Challenge,
@@ -157,7 +157,7 @@ async fn fetch_challenge(
 }
 
 pub async fn fetch(
-    client: &reqwest::Client,
+    client: &http::Client,
     cookie_store: &CookieStore,
     remote: &ctf::Remote,
 ) -> Result<ctf::CTF> {
@@ -184,7 +184,7 @@ pub struct CtfdEngine {}
 impl engines::Engine for CtfdEngine {
     fn detect<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         remote: &'a ctf::Remote,
         main_page: &'a str,
     ) -> engines::DetectResult<'a> {
@@ -193,7 +193,7 @@ impl engines::Engine for CtfdEngine {
 
     fn login<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         remote: &'a Remote,
         username: &'a str,
         password: &'a str,
@@ -203,7 +203,7 @@ impl engines::Engine for CtfdEngine {
 
     fn fetch<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         cookie_store: &'a CookieStore,
         remote: &'a ctf::Remote,
     ) -> engines::FetchResult<'a> {
