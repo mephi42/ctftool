@@ -4,6 +4,7 @@ use anyhow::Result;
 
 use crate::ctf;
 use crate::subprocess::check_call;
+use std::path::Path;
 
 pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
     ctf::store(context)?;
@@ -20,9 +21,10 @@ pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
     Ok(())
 }
 
-pub fn get_option(name: &str) -> Result<Option<String>> {
+pub fn get_option(root: &Path, name: &str) -> Result<Option<String>> {
     let child = Command::new("git")
         .args(&["config", name])
+        .current_dir(root)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
@@ -35,7 +37,11 @@ pub fn get_option(name: &str) -> Result<Option<String>> {
     }
 }
 
-pub fn set_option(name: &str, value: &str) -> Result<()> {
-    check_call(Command::new("git").args(&["config", name, value]))?;
+pub fn set_option(root: &Path, name: &str, value: &str) -> Result<()> {
+    check_call(
+        Command::new("git")
+            .args(&["config", name, value])
+            .current_dir(root),
+    )?;
     Ok(())
 }

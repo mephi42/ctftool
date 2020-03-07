@@ -7,6 +7,7 @@ use crate::ctf;
 use crate::engines;
 use crate::git;
 use crate::http;
+use std::path::PathBuf;
 
 #[derive(Clap)]
 pub struct Fetch {
@@ -15,8 +16,8 @@ pub struct Fetch {
     pub name: String,
 }
 
-pub async fn run(fetch: Fetch) -> Result<()> {
-    let mut context = ctf::load()?;
+pub async fn run(fetch: Fetch, current_dir: PathBuf) -> Result<()> {
+    let mut context = ctf::load(current_dir)?;
     let mut remote = ctf::find_remote_mut(&mut context.ctf, &fetch.name)?;
     let client = http::mk_client()?;
     let mut cookie_store = CookieStore::default();

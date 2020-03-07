@@ -8,6 +8,7 @@ use crate::ctf;
 use crate::engines;
 use crate::git;
 use crate::http;
+use std::path::PathBuf;
 
 #[derive(Clap)]
 pub struct Login {
@@ -16,8 +17,8 @@ pub struct Login {
     pub name: String,
 }
 
-pub async fn run(login: Login) -> Result<()> {
-    let mut context = ctf::load()?;
+pub async fn run(login: Login, current_dir: PathBuf) -> Result<()> {
+    let mut context = ctf::load(current_dir)?;
     let mut remote = ctf::find_remote_mut(&mut context.ctf, &login.name)?;
     print!("Login: ");
     stdout().flush()?;
