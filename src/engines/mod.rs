@@ -8,6 +8,7 @@ use anyhow::{anyhow, Result};
 use lazy_static::lazy_static;
 
 use crate::ctf;
+use crate::http;
 
 pub mod ctfd;
 pub mod watevr;
@@ -19,20 +20,20 @@ type FetchResult<'a> = Pin<Box<dyn Future<Output = Result<ctf::CTF>> + 'a>>;
 pub trait Engine {
     fn detect<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         remote: &'a ctf::Remote,
         main_page: &'a str,
     ) -> DetectResult<'a>;
     fn login<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         remote: &'a ctf::Remote,
         login: &'a str,
         password: &'a str,
     ) -> LoginResult<'a>;
     fn fetch<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         cookie_store: &'a CookieStore,
         remote: &'a ctf::Remote,
     ) -> FetchResult<'a>;
@@ -60,7 +61,7 @@ pub fn get_engine(name: &str) -> Result<&(dyn Engine + Sync)> {
         .ok_or_else(|| anyhow!("Unsupported engine: {}", name))
 }
 
-pub async fn detect(client: &reqwest::Client, remote: &ctf::Remote) -> Result<String> {
+pub async fn detect(client: &http::Client, remote: &ctf::Remote) -> Result<String> {
     let main_page_response = client.execute(client.get(&remote.url).build()?).await?;
     main_page_response.error_for_status_ref()?;
     let main_page = main_page_response.text().await?;

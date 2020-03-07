@@ -1,7 +1,10 @@
 use reqwest::header::HeaderValue;
-use reqwest::{RequestBuilder, Url};
+use reqwest::{self, Url};
 
 use anyhow::{anyhow, Result};
+use regex::Regex;
+
+use crate::ctf;
 
 pub fn build_url(base: &str, path: &[&str]) -> Result<Url> {
     let mut url = Url::parse(base)?;
@@ -15,7 +18,7 @@ pub trait RequestBuilderExt {
     fn add_cookie_header(self, url: &Url, cookie_store: &cookie_store::CookieStore) -> Self;
 }
 
-impl RequestBuilderExt for RequestBuilder {
+impl RequestBuilderExt for reqwest::RequestBuilder {
     /* Stolen from reqwest::async_impl::client. */
     fn add_cookie_header(self, url: &Url, cookie_store: &cookie_store::CookieStore) -> Self {
         let header = cookie_store
@@ -68,9 +71,55 @@ impl CookieStoreExt for cookie_store::CookieStore {
     }
 }
 
-pub fn mk_client() -> Result<reqwest::Client> {
-    let client = reqwest::Client::builder()
-        .redirect(reqwest::redirect::Policy::none())
-        .build()?;
-    Ok(client)
+struct RewriteRule {
+    regex: Regex,
+    rep: String,
+}
+
+pub struct Client {
+    client: reqwest::Client,
+    rewrite_rules: Vec<RewriteRule>,
+}
+
+impl Client {
+    pub async fn execute(&self, mut request: reqwest::Request) -> Result<reqwest::Response> {
+        self.rewrite(request.url_mut())?;
+        Ok(self.client.execute(request).await?)
+    }
+
+    pub fn get<U: reqwest::IntoUrl>(&self, url: U) -> reqwest::RequestBuilder {
+        self.client.get(url)
+    }
+
+    pub fn post<U: reqwest::IntoUrl>(&self, url: U) -> reqwest::RequestBuilder {
+        self.client.post(url)
+    }
+
+    fn rewrite(&self, url: &mut Url) -> Result<()> {
+        let mut s = url.as_str().to_owned();
+        for rewrite_rule in &self.rewrite_rules {
+            s = rewrite_rule
+                .regex
+                .replace_all(&s, rewrite_rule.rep.as_str())
+                .into_owned();
+        }
+        *url = Url::parse(&s)?;
+        Ok(())
+    }
+}
+
+pub fn mk_client(rewrite_rule_strings: &[ctf::RewriteRule]) -> Result<Client> {
+    let mut rewrite_rules = Vec::new();
+    for s in rewrite_rule_strings {
+        rewrite_rules.push(RewriteRule {
+            regex: Regex::new(&s.regex)?,
+            rep: s.rep.to_owned(),
+        });
+    }
+    Ok(Client {
+        client: reqwest::Client::builder()
+            .redirect(reqwest::redirect::Policy::none())
+            .build()?,
+        rewrite_rules,
+    })
 }

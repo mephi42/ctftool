@@ -28,7 +28,7 @@ struct Challenge {
     title: String,
 }
 
-async fn detect(_client: &reqwest::Client, _remote: &ctf::Remote, main_page: &str) -> Result<()> {
+async fn detect(_client: &http::Client, _remote: &ctf::Remote, main_page: &str) -> Result<()> {
     let needle = "watevrCTF";
     if main_page.contains(needle) {
         Ok(())
@@ -38,7 +38,7 @@ async fn detect(_client: &reqwest::Client, _remote: &ctf::Remote, main_page: &st
 }
 
 async fn fetch(
-    client: &reqwest::Client,
+    client: &http::Client,
     cookie_store: &CookieStore,
     remote: &ctf::Remote,
 ) -> Result<ctf::CTF> {
@@ -98,7 +98,7 @@ pub struct WatevrEngine {}
 impl engines::Engine for WatevrEngine {
     fn detect<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         remote: &'a ctf::Remote,
         main_page: &'a str,
     ) -> engines::DetectResult<'a> {
@@ -107,7 +107,7 @@ impl engines::Engine for WatevrEngine {
 
     fn login<'a>(
         &self,
-        _client: &'a reqwest::Client,
+        _client: &'a http::Client,
         _remote: &'a ctf::Remote,
         _login: &'a str,
         _password: &'a str,
@@ -117,7 +117,7 @@ impl engines::Engine for WatevrEngine {
 
     fn fetch<'a>(
         &self,
-        client: &'a reqwest::Client,
+        client: &'a http::Client,
         cookie_store: &'a CookieStore,
         remote: &'a ctf::Remote,
     ) -> engines::FetchResult<'a> {

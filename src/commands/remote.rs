@@ -89,6 +89,7 @@ pub fn run(remote: Remote, current_dir: PathBuf) -> Result<()> {
                 name: add.name,
                 url: add.url,
                 engine: ctf::default_engine(),
+                rewrite_rules: Vec::new(),
             });
             git::commit(&context, &message)?;
         }

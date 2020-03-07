@@ -3,6 +3,7 @@ use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
+use log::warn;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_yaml;
@@ -10,6 +11,8 @@ use url::Url;
 
 use anyhow::{anyhow, bail, Error, Result};
 use lazy_static::lazy_static;
+
+use crate::http;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct CTF {
@@ -22,11 +25,19 @@ pub struct CTF {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct RewriteRule {
+    pub regex: String,
+    pub rep: String,
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct Remote {
     pub name: String,
     pub url: String,
     #[serde(default = "default_engine")]
     pub engine: String,
+    #[serde(default)]
+    pub rewrite_rules: Vec<RewriteRule>,
 }
 
 pub fn default_engine() -> String {
@@ -233,7 +244,7 @@ fn extract_google_drive_id(url: &str) -> Result<Option<String>> {
     Ok(None)
 }
 
-async fn resolve_google_drive_binary(client: &reqwest::Client, id: &str) -> Result<Binary> {
+async fn resolve_google_drive_binary(client: &http::Client, id: &str) -> Result<Binary> {
     let initial_url = format!("https://drive.google.com/uc?export=download&id={}", id);
     let mut url = initial_url.clone();
     loop {
@@ -246,6 +257,8 @@ async fn resolve_google_drive_binary(client: &reqwest::Client, id: &str) -> Resu
             continue;
         }
         response.error_for_status_ref()?;
+        // TODO: use https://github.com/hyperium/headers/blob/master/src/common/content_disposition.rs
+        // TODO: when parsing functionality is fixed
         let content_disposition = match response.headers().get(reqwest::header::CONTENT_DISPOSITION)
         {
             Some(location) => location.to_str()?,
@@ -283,7 +296,7 @@ pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
 }
 
 pub async fn binaries_from_description(
-    client: &reqwest::Client,
+    client: &http::Client,
     description: &str,
 ) -> Result<Vec<Binary>> {
     let mut binaries = Vec::new();
@@ -293,7 +306,10 @@ pub async fn binaries_from_description(
         .collect();
     for url in urls {
         if let Some(id) = extract_google_drive_id(&url)? {
-            binaries.push(resolve_google_drive_binary(client, &id).await?);
+            match resolve_google_drive_binary(client, &id).await {
+                Ok(binary) => binaries.push(binary),
+                Err(err) => warn!("{}", err),
+            }
         }
     }
     Ok(binaries)
