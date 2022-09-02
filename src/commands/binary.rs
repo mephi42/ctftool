@@ -1,4 +1,4 @@
-use clap::Clap;
+use clap::Parser;
 use console::style;
 
 use anyhow::{anyhow, bail, Result};
@@ -8,13 +8,13 @@ use crate::git;
 use crate::option;
 use std::path::PathBuf;
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Binary {
     #[clap(subcommand)]
     subcmd: SubCommand,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 enum SubCommand {
     /// Prints a list of registered binaries
     #[clap(name = "show")]
@@ -33,22 +33,22 @@ enum SubCommand {
     Default(Default),
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Show {}
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Add {
     /// Name in `binary.alternative` format
     pub name: String,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Rm {
     /// Name
     pub name: String,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Default {
     /// Name
     pub name: String,
@@ -70,7 +70,7 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
         [challenge_name] => challenge_name,
         _ => bail!("Not in a challenge directory"),
     };
-    let challenge = ctf::find_challenge_mut(&mut context.ctf, &challenge_name)?;
+    let challenge = ctf::find_challenge_mut(&mut context.ctf, challenge_name)?;
     match binary.subcmd {
         SubCommand::Show(_) => {
             for binary in &challenge.binaries {
@@ -112,7 +112,7 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
                 });
                 ctf::set_default_alternative(
                     &context.root,
-                    &challenge_name,
+                    challenge_name,
                     challenge.binaries.last_mut().unwrap(),
                     alternative_name,
                 )?;

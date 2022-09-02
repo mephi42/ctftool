@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use clap::Clap;
+use clap::Parser;
 
 use anyhow::{anyhow, Result};
 
@@ -9,14 +9,14 @@ use crate::ctf;
 use crate::git;
 use crate::subprocess::check_call;
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Init {}
 
 pub fn run(_init: Init, root: PathBuf) -> Result<()> {
     let ctf = ctf::CTF {
         name: Path::file_name(&root)
-            .and_then({ |x| x.to_str() })
-            .ok_or_else({ || anyhow!("Could not obtain the name of the current directory") })?
+            .and_then(|x| x.to_str())
+            .ok_or_else(|| anyhow!("Could not obtain the name of the current directory"))?
             .into(),
         remotes: vec![],
         challenges: vec![],

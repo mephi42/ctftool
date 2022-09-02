@@ -1,4 +1,4 @@
-use clap::Clap;
+use clap::Parser;
 use cookie_store::CookieStore;
 
 use anyhow::{anyhow, Result};
@@ -9,7 +9,7 @@ use crate::git;
 use crate::http;
 use std::path::PathBuf;
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Fetch {
     /// Remote name
     #[clap(default_value = "origin")]
@@ -29,10 +29,10 @@ pub async fn run(fetch: Fetch, current_dir: PathBuf) -> Result<()> {
         }
     }
     if remote.engine == "auto" {
-        remote.engine = engines::detect(&client, &remote).await?;
+        remote.engine = engines::detect(&client, remote).await?;
     }
     let engine = engines::get_engine(&remote.engine)?;
-    let fetched = engine.fetch(&client, &cookie_store, &remote).await?;
+    let fetched = engine.fetch(&client, &cookie_store, remote).await?;
     ctf::merge(&mut context.ctf, fetched);
     git::commit(&context, &format!("Fetch from {}", fetch.name))?;
     Ok(())
