@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::sync::Once;
 
 use anyhow::Result;
-use clap::Clap;
+use clap::Parser;
 
 pub mod commands;
 pub mod ctf;
@@ -14,13 +14,13 @@ pub mod option;
 pub mod subprocess;
 
 /// Automates all the boring CTF stuff
-#[derive(Clap)]
+#[derive(Parser)]
 struct Opts {
     #[clap(subcommand)]
     subcmd: SubCommand,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 enum SubCommand {
     /// Initializes a git repository for a single CTF
     #[clap(name = "init")]

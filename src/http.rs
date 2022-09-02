@@ -26,8 +26,8 @@ impl RequestBuilderExt for reqwest::RequestBuilder {
     /* Stolen from reqwest::async_impl::client. */
     fn add_cookie_header(self, url: &Url, cookie_store: &cookie_store::CookieStore) -> Self {
         let header = cookie_store
-            .get_request_cookies(url)
-            .map(|c| format!("{}={}", c.name(), c.value()))
+            .get_request_values(url)
+            .map(|(name, value)| format!("{}={}", name, value))
             .collect::<Vec<_>>()
             .join("; ");
         if header.is_empty() {
@@ -66,11 +66,11 @@ impl CookieStoreExt for cookie_store::CookieStore {
             if cookie.max_age().is_none() && cookie.expires().is_none() {
                 /* Nasty hack: make all cookies persistent, so that CookieStore.save_json() would
                 output them. */
-                cookie.set_max_age(time::Duration::weeks(1));
+                cookie.set_max_age(None);
             }
             cookies.push(cookie);
         }
-        self.store_response_cookies(cookies.into_iter(), &url);
+        self.store_response_cookies(cookies.into_iter(), url);
         Ok(())
     }
 }

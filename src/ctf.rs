@@ -239,7 +239,7 @@ pub fn best_category(categories: &[String]) -> &'static str {
 }
 
 pub fn sanitize_title(title: &str) -> String {
-    title.replace(" ", "_")
+    title.replace(' ', "_")
 }
 
 pub fn binary_from_url(url: &str) -> Result<Binary> {
@@ -272,7 +272,7 @@ fn extract_google_drive_id(url: &str) -> Result<Option<String>> {
         Regex::new(r#"^https://drive.google.com/open\?id=(.+)$"#)?,
     ];
     for regex in regexes {
-        let id = regex.captures(&url).map(|cap| cap[1].to_string());
+        let id = regex.captures(url).map(|cap| cap[1].to_string());
         if id.is_some() {
             return Ok(id);
         }
@@ -302,7 +302,7 @@ async fn resolve_google_drive_binary(client: &http::Client, id: &str) -> Result<
         };
         let content_disposition_regex = Regex::new(r#"^attachment;filename="([^"]+)";"#)?;
         if let Some(file_name) = content_disposition_regex
-            .captures(&content_disposition)
+            .captures(content_disposition)
             .map(|cap| cap[1].to_string())
         {
             break Ok(Binary {
@@ -322,7 +322,7 @@ async fn resolve_google_drive_binary(client: &http::Client, id: &str) -> Result<
 pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
     let mut services = Vec::new();
     let nc_regex = Regex::new(r#"nc ([^ ]+) (\d+)"#)?;
-    for nc in nc_regex.captures_iter(&description) {
+    for nc in nc_regex.captures_iter(description) {
         services.push(Service {
             name: None,
             url: Some(format!("nc://{}:{}", &nc[1], &nc[2])),
@@ -338,7 +338,7 @@ pub async fn binaries_from_description(
 ) -> Result<Vec<Binary>> {
     let mut binaries = Vec::new();
     let mut urls: Vec<String> = url_regex()?
-        .captures_iter(&description)
+        .captures_iter(description)
         .map(|cap| cap[0].to_string())
         .collect();
     urls.sort();

@@ -44,7 +44,7 @@ async fn get_login_page(
         .add_cookie_header(login_page_url, cookie_store);
     let login_page_response = client.execute(login_page_request.build()?).await?;
     login_page_response.error_for_status_ref()?;
-    cookie_store.store_cookies_from_response(&login_page_response, &login_page_url)?;
+    cookie_store.store_cookies_from_response(&login_page_response, login_page_url)?;
     let login_page = login_page_response.text().await?;
     let nonce_regex =
         Regex::new(r#"<input type="hidden" name="csrfmiddlewaretoken" value="([^"]+)">"#)?;
@@ -90,7 +90,7 @@ async fn post_login_page(
     if !is_login_ok(&login_response)? {
         bail!("Incorrect login/password\n");
     }
-    cookie_store.store_cookies_from_response(&login_response, &login_page_url)?;
+    cookie_store.store_cookies_from_response(&login_response, login_page_url)?;
     Ok(())
 }
 
@@ -123,7 +123,7 @@ async fn fetch_challenges_t(
     let challenges_url = http::build_url(&remote.url, &["challenges", ""])?;
     let challenges_request = client
         .get(challenges_url.as_str())
-        .add_cookie_header(&challenges_url, &cookie_store);
+        .add_cookie_header(&challenges_url, cookie_store);
     let challenges_response = client.execute(challenges_request.build()?).await?;
     challenges_response.error_for_status_ref()?;
     let challenges = challenges_response.text().await?;
@@ -145,7 +145,7 @@ async fn fetch_challenge(
     let challenge_url = http::build_url(&remote.url, challenge.url.split('/'))?;
     let challenge_request = client
         .get(challenge_url.as_str())
-        .add_cookie_header(&challenge_url, &cookie_store)
+        .add_cookie_header(&challenge_url, cookie_store)
         .header("X-Requested-With", "XMLHttpRequest");
     let challenge_response = client.execute(challenge_request.build()?).await?;
     challenge_response.error_for_status_ref()?;
@@ -153,7 +153,7 @@ async fn fetch_challenge(
     let category = ctf::best_category(&challenge.content.categories);
     let title = ctf::sanitize_title(&challenge.content.name);
     let binaries =
-        ctf::binaries_from_description(&client, &cookie_store, &challenge.content.description)
+        ctf::binaries_from_description(client, cookie_store, &challenge.content.description)
             .await?;
     let services = ctf::services_from_description(&challenge.content.description)?;
     Ok(ctf::Challenge {
@@ -182,14 +182,14 @@ async fn fetch(
     challenges_url.set_query(Some(&format!("t={}", t)));
     let challenges_request = client
         .get(challenges_url.as_str())
-        .add_cookie_header(&challenges_url, &cookie_store)
+        .add_cookie_header(&challenges_url, cookie_store)
         .header("X-Requested-With", "XMLHttpRequest");
     let challenges_response = client.execute(challenges_request.build()?).await?;
     challenges_response.error_for_status_ref()?;
     let challenges: ChallengesResponse = challenges_response.json().await?;
     for challenge in challenges.content {
         ctf.challenges
-            .push(fetch_challenge(&client, &cookie_store, &remote, &challenge).await?);
+            .push(fetch_challenge(client, cookie_store, remote, &challenge).await?);
     }
     Ok(ctf)
 }

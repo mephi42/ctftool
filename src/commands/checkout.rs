@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use std::pin::Pin;
 use std::sync::Arc;
 
-use clap::Clap;
+use clap::Parser;
 use futures::future::{join, join_all, FutureExt};
 use futures::TryFutureExt;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
@@ -17,7 +17,7 @@ use anyhow::{anyhow, bail, Result};
 use crate::ctf;
 use crate::git;
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Checkout {
     /// Challenges or binaries to checkout
     specs: Vec<String>,
@@ -28,16 +28,16 @@ where
     H: Digest,
 {
     let mut hash = H::new();
-    let mut buf = [0 as u8; 8192];
+    let mut buf = [0_u8; 8192];
     let mut file = File::open(path).await?;
     let meta = file.metadata().await?;
     progress_bar.set_length(meta.len());
     loop {
         let n = file.read(&mut buf).await?;
         if n == 0 {
-            break Ok(hex::encode(hash.result()));
+            break Ok(hex::encode(hash.finalize()));
         }
-        hash.input(&buf[0..n]);
+        hash.update(&buf[0..n]);
         progress_bar.inc(n as u64);
     }
 }
@@ -51,18 +51,18 @@ fn mk_progress_bar() -> ProgressBar {
 
 async fn hexdigest(path: &Path, algorithm: &str, progress: &MultiProgress) -> Result<String> {
     let progress_bar = mk_progress_bar();
-    progress_bar.set_message(&format!("{} {}", algorithm.to_uppercase(), path.display()));
+    progress_bar.set_message(format!("{} {}", algorithm.to_uppercase(), path.display()));
     let progress_bar = progress.add(progress_bar);
     let result = match algorithm {
         "sha256" => hexdigest_1::<Sha256>(path, &progress_bar).await,
         _ => Err(anyhow!("Unsupported checksum algorithm: {}", algorithm)),
     };
     if let Err(e) = &result {
-        progress_bar.finish_with_message(&format!(
+        progress_bar.finish_with_message(format!(
             "ERROR {} {}: {}",
             algorithm.to_uppercase(),
             path.display(),
-            e.to_string(),
+            e,
         ));
     } else {
         progress_bar.finish_and_clear();
@@ -83,7 +83,7 @@ async fn download_1(path: &Path, url: &str, progress_bar: &ProgressBar) -> Resul
     loop {
         let chunk = response.chunk().await?;
         if let Some(chunk) = chunk {
-            file.write(&chunk).await?;
+            file.write_all(&chunk).await?;
             progress_bar.inc(chunk.len() as u64);
         } else {
             break Ok(());
@@ -93,11 +93,11 @@ async fn download_1(path: &Path, url: &str, progress_bar: &ProgressBar) -> Resul
 
 async fn download(path: &Path, url: &str, progress: &MultiProgress) -> Result<()> {
     let progress_bar = mk_progress_bar();
-    progress_bar.set_message(&format!("DOWNLOAD {}", url));
+    progress_bar.set_message(format!("DOWNLOAD {}", url));
     let progress_bar = progress.add(progress_bar);
     let result = download_1(path, url, &progress_bar).await;
     if let Err(e) = &result {
-        progress_bar.finish_with_message(&format!("ERROR DOWNLOAD {}: {}", url, e.to_string(),));
+        progress_bar.finish_with_message(format!("ERROR DOWNLOAD {}: {}", url, e));
     } else {
         progress_bar.finish_and_clear();
     }
@@ -110,7 +110,7 @@ async fn checkout_alternative(
     progress: &MultiProgress,
 ) -> Result<Option<ctf::Checksum>> {
     if let Some(checksum) = &alternative.checksum {
-        match hexdigest(&path, &checksum.algorithm, &progress).await {
+        match hexdigest(&path, &checksum.algorithm, progress).await {
             Ok(value) if value == checksum.value => return Ok(None),
             Ok(_) => {}
             Err(_) => {}
@@ -122,14 +122,14 @@ async fn checkout_alternative(
         None => return Ok(None),
     }
     let result = if let Some(checksum) = &alternative.checksum {
-        let value = hexdigest(&path, &checksum.algorithm, &progress).await?;
+        let value = hexdigest(&path, &checksum.algorithm, progress).await?;
         if value != checksum.value {
             bail!("Checksum error");
         }
         None
     } else {
         let algorithm = "sha256".to_string();
-        let value = hexdigest(&path, &algorithm, &progress).await?;
+        let value = hexdigest(&path, &algorithm, progress).await?;
         Some(ctf::Checksum { algorithm, value })
     };
     rename(tmp_path, path).await?;
@@ -162,7 +162,7 @@ fn checkout_challenge<'a>(
                     binary: binary.name.clone(),
                     alternative: alternative.name.clone(),
                 },
-                checkout_alternative(&alternative, path.clone(), &progress)
+                checkout_alternative(alternative, path.clone(), progress)
                     .map_err(move |e| e.context(format!("Could not checkout {}", path.display())))
                     .boxed(),
             ));
@@ -179,7 +179,7 @@ pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
         [] => {
             if checkout.specs.is_empty() {
                 for challenge in &context.ctf.challenges {
-                    checkouts.extend(checkout_challenge(&context, &challenge, &progress));
+                    checkouts.extend(checkout_challenge(&context, challenge, &progress));
                 }
             } else {
                 for spec in checkout.specs {
@@ -197,7 +197,7 @@ pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
             }
             checkouts.extend(checkout_challenge(
                 &context,
-                ctf::find_challenge(&context.ctf, &challenge_name)?,
+                ctf::find_challenge(&context.ctf, challenge_name)?,
                 &progress,
             ));
         }
@@ -225,9 +225,9 @@ pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
     for (key, single_result) in keys.into_iter().zip(results.into_iter()) {
         match single_result {
             Ok(Some(checksum)) => {
-                let mut challenge = ctf::find_challenge_mut(&mut context.ctf, &key.challenge)?;
-                let mut binary = ctf::find_binary_mut(&mut challenge, &key.binary)?;
-                let mut alternative = ctf::find_alternative_mut(&mut binary, &key.alternative)?;
+                let challenge = ctf::find_challenge_mut(&mut context.ctf, &key.challenge)?;
+                let binary = ctf::find_binary_mut(challenge, &key.binary)?;
+                let mut alternative = ctf::find_alternative_mut(binary, &key.alternative)?;
                 alternative.checksum = Some(checksum);
             }
             Ok(None) => {}

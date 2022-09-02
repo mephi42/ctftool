@@ -37,7 +37,7 @@ async fn fetch(
     let url = http::build_url(&remote.url, &["api", "watsup"])?;
     let request = client
         .get(&url.to_string())
-        .add_cookie_header(&url, &cookie_store);
+        .add_cookie_header(&url, cookie_store);
     let response = client.execute(request.build()?).await?;
     response.error_for_status_ref()?;
     let watsup: Watsup = response.json().await?;

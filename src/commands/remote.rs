@@ -1,17 +1,17 @@
 use anyhow::{bail, Result};
-use clap::Clap;
+use clap::Parser;
 
 use crate::ctf;
 use crate::git;
 use std::path::PathBuf;
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Remote {
     #[clap(subcommand)]
     subcmd: SubCommand,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 enum SubCommand {
     /// Prints a list of configured link names
     #[clap(name = "show")]
@@ -34,10 +34,10 @@ enum SubCommand {
     SetEngine(SetEngine),
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Show {}
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Add {
     /// Remote name
     pub name: String,
@@ -46,19 +46,19 @@ pub struct Add {
     pub url: String,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Rm {
     /// Remote name
     pub name: String,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct GetEngine {
     /// Remote name
     pub name: String,
 }
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct SetEngine {
     /// Remote name
     pub name: String,

@@ -1,6 +1,6 @@
 use std::io::{stdin, stdout, Write};
 
-use clap::Clap;
+use clap::Parser;
 
 use anyhow::{anyhow, Result};
 
@@ -10,7 +10,7 @@ use crate::git;
 use crate::http;
 use std::path::PathBuf;
 
-#[derive(Clap)]
+#[derive(Parser)]
 pub struct Login {
     /// Remote name
     #[clap(default_value = "origin")]
@@ -28,10 +28,10 @@ pub async fn run(login: Login, current_dir: PathBuf) -> Result<()> {
     let password = rpassword::read_password_from_tty(Some("Password: "))?;
     let client = http::mk_client(&remote.rewrite_rules)?;
     if remote.engine == "auto" {
-        remote.engine = engines::detect(&client, &remote).await?;
+        remote.engine = engines::detect(&client, remote).await?;
     }
     let engine = engines::get_engine(&remote.engine)?;
-    let cookie_store = engine.login(&client, &remote, &username, &password).await?;
+    let cookie_store = engine.login(&client, remote, &username, &password).await?;
     let mut cookies = Vec::new();
     cookie_store
         .save_json(&mut cookies)
