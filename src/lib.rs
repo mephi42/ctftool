@@ -45,6 +45,10 @@ enum SubCommand {
     /// Manages challenge binaries
     #[clap(name = "binary")]
     Binary(commands::binary::Binary),
+
+    /// Manages challenges
+    #[clap(name = "challenge")]
+    Challenge(commands::challenge::Challenge),
 }
 
 pub async fn main<I, T>(args: I, current_dir: PathBuf) -> Result<()>
@@ -60,6 +64,7 @@ where
         SubCommand::Checkout(checkout) => commands::checkout::run(checkout, current_dir).await,
         SubCommand::Login(login) => commands::login::run(login, current_dir).await,
         SubCommand::Binary(binary) => commands::binary::run(binary, current_dir).await,
+        SubCommand::Challenge(challenge) => commands::challenge::run(challenge, current_dir),
     }
 }
 

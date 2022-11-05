@@ -10,12 +10,12 @@ pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
     ctf::store(context)?;
     check_call(
         Command::new("git")
-            .args(&["add", "."])
+            .args(["add", "."])
             .current_dir(&context.root),
     )?;
     check_call(
         Command::new("git")
-            .args(&["commit", "-m", message])
+            .args(["commit", "-m", message])
             .current_dir(&context.root),
     )?;
     Ok(())
@@ -23,7 +23,7 @@ pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
 
 pub fn get_option(root: &Path, name: &str) -> Result<Option<String>> {
     let child = Command::new("git")
-        .args(&["config", name])
+        .args(["config", name])
         .current_dir(root)
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
@@ -40,7 +40,7 @@ pub fn get_option(root: &Path, name: &str) -> Result<Option<String>> {
 pub fn set_option(root: &Path, name: &str, value: &str) -> Result<()> {
     check_call(
         Command::new("git")
-            .args(&["config", name, value])
+            .args(["config", name, value])
             .current_dir(root),
     )?;
     Ok(())

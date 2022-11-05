@@ -21,7 +21,7 @@ pub fn run(_init: Init, root: PathBuf) -> Result<()> {
         remotes: vec![],
         challenges: vec![],
     };
-    check_call(Command::new("git").args(&["init"]).current_dir(&root))?;
+    check_call(Command::new("git").args(["init"]).current_dir(&root))?;
     if git::get_option(&root, "user.name")?.is_none() {
         git::set_option(&root, "user.name", "ctf")?;
     }

@@ -1,5 +1,6 @@
 extern crate ctftool;
 
+use std::fs::create_dir;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicI32, Ordering};
 
@@ -196,4 +197,31 @@ async fn test_fetch_ctfd() -> Result<()> {
 #[test]
 async fn test_fetch_insomnihack() -> Result<()> {
     test_fetch("insomnihack").await
+}
+
+#[test]
+fn test_challenge() -> Result<()> {
+    ctftool::init_logging();
+    let work_dir = WorkDir::new()?;
+    main_sync(&work_dir, &["init"])?;
+    /* No challenges yet. */
+    main_sync(&work_dir, &["challenge", "show"])?;
+    /* Cannot delete non-existent challenge. */
+    assert!(main_sync(&work_dir, &["challenge", "rm", "test"]).is_err());
+    /* Cannot add a challenge unless there is a directory. */
+    assert!(main_sync(&work_dir, &["challenge", "add", "test"]).is_err());
+    /* Create a directory and add a challenge. */
+    create_dir(work_dir.temp_dir.path().join("test"))?;
+    main_sync(&work_dir, &["challenge", "add", "test"])?;
+    main_sync(
+        &work_dir,
+        &["challenge", "set-description", "test", "test description"],
+    )?;
+    /* One challenge. */
+    main_sync(&work_dir, &["remote", "show"])?;
+    /* Delete the challenge. */
+    main_sync(&work_dir, &["challenge", "rm", "test"])?;
+    /* No challenges. */
+    main_sync(&work_dir, &["remote", "show"])?;
+    Ok(())
 }

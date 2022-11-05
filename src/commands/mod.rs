@@ -1,4 +1,5 @@
 pub mod binary;
+pub mod challenge;
 pub mod checkout;
 pub mod fetch;
 pub mod init;
