@@ -54,7 +54,7 @@ pub struct Rm {
 }
 
 pub fn run(challenge: Challenge, current_dir: PathBuf) -> Result<()> {
-    let mut context = ctf::load(current_dir.clone())?;
+    let mut context = ctf::load(current_dir)?;
     match challenge.subcmd {
         SubCommand::Show(_show) => {
             for challenge in context.ctf.challenges {
@@ -70,8 +70,7 @@ pub fn run(challenge: Challenge, current_dir: PathBuf) -> Result<()> {
             if existing.is_some() {
                 bail!("Challenge {} already exists", add.name);
             }
-            let mut challenge_dir = current_dir;
-            challenge_dir.push(&add.name);
+            let challenge_dir = context.root.join(&add.name);
             if !challenge_dir.exists() {
                 bail!("Directory {} does not exist", challenge_dir.display());
             }
