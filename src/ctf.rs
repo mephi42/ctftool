@@ -96,6 +96,7 @@ pub struct Context {
     pub credentials: Credentials,
     pub root: PathBuf,
     pub path: Vec<String>,
+    pub cwd: PathBuf,
 }
 
 fn load_credentials(root: &Path) -> Result<Credentials> {
@@ -109,23 +110,25 @@ fn load_credentials(root: &Path) -> Result<Credentials> {
     }
 }
 
-pub fn load(mut dir: PathBuf) -> Result<Context> {
+pub fn load(cwd: PathBuf) -> Result<Context> {
+    let mut root = cwd.clone();
     let mut path = Vec::new();
     loop {
-        match fs::read(dir.join(".ctf")) {
+        match fs::read(root.join(".ctf")) {
             Ok(bytes) => {
                 let str = &String::from_utf8(bytes)?;
                 let ctf: CTF = serde_yaml::from_str(str)?;
                 path.reverse();
                 break Ok(Context {
                     ctf,
-                    credentials: load_credentials(&dir)?,
-                    root: dir,
+                    credentials: load_credentials(&root)?,
+                    root,
                     path,
+                    cwd,
                 });
             }
             Err(e) if e.kind() == ErrorKind::NotFound => {
-                match dir.file_name() {
+                match root.file_name() {
                     Some(component) => path.push(
                         component
                             .to_str()
@@ -138,7 +141,7 @@ pub fn load(mut dir: PathBuf) -> Result<Context> {
                         ));
                     }
                 }
-                dir.pop();
+                root.pop();
             }
             Err(e) => break Err(Error::new(e)),
         }
@@ -146,12 +149,13 @@ pub fn load(mut dir: PathBuf) -> Result<Context> {
 }
 
 fn ignore(ctf: &CTF) -> Vec<String> {
-    let mut result = vec!["/*".into(), "!/.ctf".into(), "!/.gitignore".into()];
+    let mut result = vec![
+        "/**".into(),
+        "!**/".into(),
+        "!/.ctf".into(),
+        "!/.gitignore".into(),
+    ];
     for challenge in &ctf.challenges {
-        result.push(format!("!/{}/", challenge.name));
-        result.push(format!("/{}/*", challenge.name));
-        result.push(format!("!/{}/image/", challenge.name));
-        result.push(format!("/{}/image/*", challenge.name));
         result.push(format!("!/{}/image/Dockerfile", challenge.name));
         result.push(format!("!/{}/docker-compose.yml", challenge.name));
         for binary in &challenge.binaries {
@@ -458,15 +462,12 @@ pub fn find_binary<'a>(challenge: &'a Challenge, name: &str) -> Result<&'a Binar
         .ok_or_else(|| anyhow!("No such binary: {}", name))
 }
 
-pub fn try_find_binary_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Option<&'a mut Binary> {
-    challenge
-        .binaries
-        .iter_mut()
-        .find(|binary| binary.name == name)
+pub fn try_find_binary_mut<'a>(binaries: &'a mut [Binary], name: &str) -> Option<&'a mut Binary> {
+    binaries.iter_mut().find(|binary| binary.name == name)
 }
 
-pub fn find_binary_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Result<&'a mut Binary> {
-    try_find_binary_mut(challenge, name).ok_or_else(|| anyhow!("No such binary: {}", name))
+pub fn find_binary_mut<'a>(binaries: &'a mut [Binary], name: &str) -> Result<&'a mut Binary> {
+    try_find_binary_mut(binaries, name).ok_or_else(|| anyhow!("No such binary: {}", name))
 }
 
 pub fn find_alternative<'a>(binary: &'a Binary, name: &str) -> Result<&'a BinaryAlternative> {
