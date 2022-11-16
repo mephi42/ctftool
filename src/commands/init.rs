@@ -28,11 +28,13 @@ pub fn run(_init: Init, root: PathBuf) -> Result<()> {
     if git::get_option(&root, "user.email")?.is_none() {
         git::set_option(&root, "user.email", "ctf@localhost")?;
     }
+    let cwd = root.clone();
     let context = ctf::Context {
         ctf,
         credentials: ctf::Credentials::default(),
         root,
         path: Vec::new(),
+        cwd,
     };
     git::commit(&context, "Initial commit")?;
     Ok(())
