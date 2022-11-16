@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 ARG ubuntu_version=latest
 FROM ubuntu:$ubuntu_version
 ARG libc_version=*
@@ -8,6 +9,7 @@ RUN apt-get -y update && \
         build-essential \
         curl \
         dbus-x11 \
+        dconf-cli \
         dpkg-dev \
         file \
         gdb \
@@ -32,3 +34,9 @@ RUN python3 -m pip install \
         rpyc \
         z3-solver
 RUN bash -c "$(curl -fsSL https://gef.blah.cat/sh)"
+RUN dbus-launch dconf load / <<EOF
+[org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(0,0,0)'
+foreground-color='rgb(255,255,255)'
+use-theme-colors=false
+EOF
