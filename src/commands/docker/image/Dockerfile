@@ -16,15 +16,20 @@ RUN apt-get -y update && \
         gdbserver \
         git \
         gnome-terminal \
+        libc-dev-bin="$libc_version" \
         libc6="$libc_version" \
         libc6-dbg="$libc_version" \
+        libc6-dev="$libc_version" \
         libcanberra-gtk3-module \
         libffi-dev \
         libssl-dev \
+        lsb-release \
+        procps \
         python3 \
         python3-dev \
         python3-pip \
         strace \
+        sudo \
         vim \
         wget
 RUN cd /usr/src && apt-get source libc6="$libc_version"
