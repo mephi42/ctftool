@@ -1,7 +1,6 @@
 use anyhow::{anyhow, bail, Result};
 use clap::Parser;
 
-use crate::distro::Packages;
 use crate::{ctf, distro, git, http, subprocess};
 use std::fs;
 use std::path::PathBuf;
@@ -79,7 +78,7 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
                     break;
                 }
             }
-            let packages = maybe_packages.unwrap_or_else(Packages::default);
+            let packages = maybe_packages.unwrap_or_default();
             let image = challenge_dir.join("image");
             fs::create_dir_all(&image)?;
             fs::write(

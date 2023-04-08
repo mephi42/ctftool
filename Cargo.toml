@@ -5,30 +5,30 @@ authors = ["mephi42 <mephi42@gmail.com>"]
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.44"
-clap = { version = "3.2.20", features = ["derive"] }
-cookie = "0.15.1"
-cookie_store = "0.15.0"
-console = "0.15.0"
-env_logger = "0.9.0"
-futures = "0.3.17"
+anyhow = "1.0.70"
+clap = { version = "4.2.1", features = ["derive"] }
+cookie = "0.16.2"
+cookie_store = "0.19.0"
+console = "0.15.5"
+env_logger = "0.10.0"
+futures = "0.3.28"
 hex = "0.4.3"
-indicatif = "0.16.2"
+indicatif = "0.17.3"
 lazy_static = "1.4.0"
-log = "0.4.14"
-regex = "1.5.4"
-reqwest = { version = "0.11.11", features = ["json", "multipart"] }
-rpassword = "5.0.1"
-serde = { version = "1.0.130", features = ["derive"] }
-serde_yaml = "0.8.21"
-sha2 = "0.9.8"
-time = "0.3.3"
-tokio = { version = "1.12.0", features = ["fs", "macros", "rt-multi-thread"] }
-url = "2.2.2"
+log = "0.4.17"
+regex = "1.7.3"
+reqwest = { version = "0.11.16", features = ["json", "multipart"] }
+rpassword = "7.2.0"
+serde = { version = "1.0.159", features = ["derive"] }
+serde_yaml = "0.9.21"
+sha2 = "0.10.6"
+time = "0.3.20"
+tokio = { version = "1.27.0", features = ["fs", "macros", "rt-multi-thread"] }
+url = "2.3.1"
 
 [dev-dependencies]
-assert_cmd = "2.0.2"
-hyper = { version = "0.14.13", features = ["server"] }
+assert_cmd = "2.0.10"
+hyper = { version = "0.14.25", features = ["server"] }
 tempdir = "0.3.7"
 
 [lib]

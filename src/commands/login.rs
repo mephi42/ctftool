@@ -25,7 +25,7 @@ pub async fn run(login: Login, current_dir: PathBuf) -> Result<()> {
     let mut username = String::new();
     stdin().read_line(&mut username)?;
     username.truncate(username.trim_end().len());
-    let password = rpassword::read_password_from_tty(Some("Password: "))?;
+    let password = rpassword::prompt_password("Password: ")?;
     let client = http::mk_client(&remote.rewrite_rules)?;
     if remote.engine == "auto" {
         remote.engine = engines::detect(&client, remote).await?;
