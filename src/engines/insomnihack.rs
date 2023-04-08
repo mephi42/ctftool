@@ -40,7 +40,7 @@ async fn get_login_page(
     login_page_url: &Url,
 ) -> Result<String> {
     let login_page_request = client
-        .get(&login_page_url.to_string())
+        .get(login_page_url.to_string())
         .add_cookie_header(login_page_url, cookie_store);
     let login_page_response = client.execute(login_page_request.build()?).await?;
     login_page_response.error_for_status_ref()?;

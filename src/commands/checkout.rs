@@ -4,13 +4,12 @@ use std::pin::Pin;
 use std::sync::Arc;
 
 use clap::Parser;
-use futures::future::{join, join_all, FutureExt};
+use futures::future::{join_all, FutureExt};
 use futures::TryFutureExt;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use sha2::{Digest, Sha256};
 use tokio::fs::{create_dir_all, rename, File};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::task::spawn_blocking;
 
 use anyhow::{anyhow, bail, Result};
 
@@ -42,15 +41,15 @@ where
     }
 }
 
-fn mk_progress_bar() -> ProgressBar {
-    ProgressBar::with_style(
+fn mk_progress_bar() -> Result<ProgressBar> {
+    Ok(ProgressBar::with_style(
         ProgressBar::hidden(),
-        ProgressStyle::default_bar().template("{wide_msg} {bytes}/{total_bytes}"),
-    )
+        ProgressStyle::default_bar().template("{wide_msg} {bytes}/{total_bytes}")?,
+    ))
 }
 
 async fn hexdigest(path: &Path, algorithm: &str, progress: &MultiProgress) -> Result<String> {
-    let progress_bar = mk_progress_bar();
+    let progress_bar = mk_progress_bar()?;
     progress_bar.set_message(format!("{} {}", algorithm.to_uppercase(), path.display()));
     let progress_bar = progress.add(progress_bar);
     let result = match algorithm {
@@ -92,7 +91,7 @@ async fn download_1(path: &Path, url: &str, progress_bar: &ProgressBar) -> Resul
 }
 
 async fn download(path: &Path, url: &str, progress: &MultiProgress) -> Result<()> {
-    let progress_bar = mk_progress_bar();
+    let progress_bar = mk_progress_bar()?;
     progress_bar.set_message(format!("DOWNLOAD {}", url));
     let progress_bar = progress.add(progress_bar);
     let result = download_1(path, url, &progress_bar).await;
@@ -203,24 +202,8 @@ pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
         }
         _ => bail!("ctf checkout must be called from top or challenge directory"),
     }
-    /* Prevent join() from returning too early. */
-    let fake = progress.add(ProgressBar::with_style(
-        ProgressBar::new(1),
-        ProgressStyle::default_bar().template(""),
-    ));
-    let progress_join = spawn_blocking({
-        let progress = progress.clone();
-        move || progress.join()
-    });
     let (keys, futures): (Vec<Key>, Vec<CheckoutFuture>) = checkouts.into_iter().unzip();
-    let (progress_join_result, results) = join(
-        progress_join,
-        join_all(futures).map(|results| {
-            fake.finish_and_clear();
-            results
-        }),
-    )
-    .await;
+    let results = join_all(futures).await;
     let mut result: Result<()> = Ok(());
     for (key, single_result) in keys.into_iter().zip(results.into_iter()) {
         match single_result {
@@ -235,6 +218,5 @@ pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
         }
     }
     git::commit(&context, "Checkout")?;
-    progress_join_result??;
     result
 }

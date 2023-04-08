@@ -1,6 +1,7 @@
 use crate::http;
 use anyhow::{anyhow, Result};
 use regex::bytes::{Captures, Regex};
+use std::default::Default;
 use std::fs;
 use std::path::PathBuf;
 use std::str;
@@ -56,8 +57,8 @@ async fn get_ubuntu_version_by_libc_version(
     Ok(None)
 }
 
-impl Packages {
-    pub fn default() -> Packages {
+impl Default for Packages {
+    fn default() -> Packages {
         Packages {
             distro: "ubuntu".into(),
             distro_version: "latest".into(),
