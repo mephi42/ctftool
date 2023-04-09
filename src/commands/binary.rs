@@ -113,7 +113,7 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
         SubCommand::Show(_) => {
             let challenge_name = context
                 .path
-                .get(0)
+                .first()
                 .ok_or_else(|| anyhow!("Not in a challenge directory"))?;
             let challenge = ctf::find_challenge(&context.ctf, challenge_name)?;
             for binary in &challenge.binaries {
