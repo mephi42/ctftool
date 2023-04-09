@@ -1,7 +1,7 @@
 use anyhow::{anyhow, bail, Result};
 use clap::Parser;
 
-use crate::{ctf, distro, git, http, subprocess};
+use crate::{ctf, distro, git, subprocess};
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
@@ -69,11 +69,10 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
     let challenge_dir = context.root.join(challenge_name);
     match docker.subcmd {
         SubCommand::Init(_init) => {
-            let client = http::mk_client(&[])?;
             let mut maybe_packages = None;
             for binary in &challenge.binaries {
                 let binary_path = challenge_dir.join(&binary.name);
-                if let Some(packages) = distro::get_packages(&client, &binary_path).await? {
+                if let Some(packages) = distro::get_packages(&binary_path)? {
                     maybe_packages = Some(packages);
                     break;
                 }
