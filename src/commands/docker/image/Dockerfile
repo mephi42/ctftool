@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
-ARG ubuntu_version=latest
-FROM ubuntu:$ubuntu_version
+ARG distro=ubuntu:latest
+FROM $distro
 ARG libc_version=*
 ENV DEBIAN_FRONTEND=noninteractive
 RUN sed -i -e 's/^# deb-src /deb-src /g' /etc/apt/sources.list
