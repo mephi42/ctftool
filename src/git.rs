@@ -6,6 +6,14 @@ use crate::ctf;
 use crate::subprocess::check_call;
 use std::path::Path;
 
+pub fn init(repo: &Path) -> Result<()> {
+    check_call(
+        Command::new("git")
+            .args(["init", "--initial-branch=master"])
+            .current_dir(repo),
+    )
+}
+
 pub fn commit(context: &ctf::Context, message: &str) -> Result<()> {
     ctf::store(context)?;
     check_call(

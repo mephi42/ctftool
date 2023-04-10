@@ -1,5 +1,4 @@
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use clap::Parser;
 
@@ -7,7 +6,6 @@ use anyhow::{anyhow, Result};
 
 use crate::ctf;
 use crate::git;
-use crate::subprocess::check_call;
 
 #[derive(Parser)]
 pub struct Init {}
@@ -21,7 +19,7 @@ pub fn run(_init: Init, root: PathBuf) -> Result<()> {
         remotes: vec![],
         challenges: vec![],
     };
-    check_call(Command::new("git").args(["init"]).current_dir(&root))?;
+    git::init(&root)?;
     if git::get_option(&root, "user.name")?.is_none() {
         git::set_option(&root, "user.name", "ctf")?;
     }

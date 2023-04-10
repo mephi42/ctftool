@@ -1,8 +1,9 @@
-use anyhow::{bail, Result};
+use anyhow::{anyhow, bail, Result};
 use clap::Parser;
 
+use crate::path::relativize;
 use crate::{ctf, git};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
 pub struct Challenge {
@@ -53,8 +54,18 @@ pub struct Rm {
     pub name: String,
 }
 
+/// Resolve challenge name
+fn resolve(root: &Path, cwd: &Path, s: String) -> Result<String> {
+    let (_, relative_path) = relativize(root, cwd, PathBuf::from(s))?;
+    let os_relative_path = relative_path.as_os_str();
+    os_relative_path
+        .to_str()
+        .ok_or_else(|| anyhow!("{:?} contains non-UTF-8 characters", os_relative_path))
+        .map(|x| x.into())
+}
+
 pub fn run(challenge: Challenge, current_dir: PathBuf) -> Result<()> {
-    let mut context = ctf::load(current_dir)?;
+    let mut context = ctf::load(current_dir.clone())?;
     match challenge.subcmd {
         SubCommand::Show(_show) => {
             for challenge in context.ctf.challenges {
@@ -62,21 +73,22 @@ pub fn run(challenge: Challenge, current_dir: PathBuf) -> Result<()> {
             }
         }
         SubCommand::Add(add) => {
+            let name = resolve(&context.root, &current_dir, add.name)?;
             let existing = context
                 .ctf
                 .challenges
                 .iter()
-                .find(|challenge| challenge.name == add.name);
+                .find(|challenge| challenge.name == name);
             if existing.is_some() {
-                bail!("Challenge {} already exists", add.name);
+                bail!("Challenge {} already exists", &name);
             }
-            let challenge_dir = context.root.join(&add.name);
+            let challenge_dir = context.root.join(&name);
             if !challenge_dir.exists() {
                 bail!("Directory {} does not exist", challenge_dir.display());
             }
-            let message = format!("Add challenge {}", add.name);
+            let message = format!("Add challenge {}", name);
             context.ctf.challenges.push(ctf::Challenge {
-                name: add.name,
+                name,
                 description: "".to_string(),
                 binaries: Vec::new(),
                 services: Vec::new(),
@@ -84,23 +96,25 @@ pub fn run(challenge: Challenge, current_dir: PathBuf) -> Result<()> {
             git::commit(&context, &message)?;
         }
         SubCommand::SetDescription(set_description) => {
+            let name = resolve(&context.root, &current_dir, set_description.name)?;
             let message = format!(
                 "Set challenge {} description to {}",
-                set_description.name, set_description.description
+                name, set_description.description
             );
-            let challenge = ctf::find_challenge_mut(&mut context.ctf, &set_description.name)?;
+            let challenge = ctf::find_challenge_mut(&mut context.ctf, &name)?;
             challenge.description = set_description.description;
             git::commit(&context, &message)?;
         }
         SubCommand::Rm(rm) => {
-            let message = format!("Remove challenge {}", rm.name);
+            let name = resolve(&context.root, &current_dir, rm.name)?;
+            let message = format!("Remove challenge {}", name);
             let n_challenges = context.ctf.challenges.len();
             context
                 .ctf
                 .challenges
-                .retain(|challenge| challenge.name != rm.name);
+                .retain(|challenge| challenge.name != name);
             if context.ctf.challenges.len() + 1 != n_challenges {
-                bail!("Challenge {} does not exist", rm.name);
+                bail!("Challenge {} does not exist", &name);
             }
             git::commit(&context, &message)?;
         }

@@ -25,6 +25,10 @@ impl WorkDir {
         let temp_dir = TempDir::new("ctf")?;
         Ok(WorkDir { temp_dir })
     }
+
+    fn to_path_buf(self: &WorkDir) -> PathBuf {
+        self.temp_dir.path().to_path_buf()
+    }
 }
 
 #[test]
@@ -34,29 +38,29 @@ fn test_exe() -> Result<()> {
     let mut command = Command::cargo_bin("ctf")?;
     command
         .args(&["init"])
-        .current_dir(work_dir.temp_dir.path())
+        .current_dir(work_dir.to_path_buf())
         .assert()
         .success();
     Ok(())
 }
 
-async fn main(work_dir: &WorkDir, args: &[&str]) -> Result<()> {
+async fn main(current_dir: PathBuf, args: &[&str]) -> Result<()> {
     let mut args_with_0 = vec!["ctftool"];
     args_with_0.extend(args);
-    ctftool::main(args_with_0.iter(), work_dir.temp_dir.path().to_path_buf()).await
+    ctftool::main(args_with_0.iter(), current_dir).await
 }
 
 #[tokio::main]
-async fn main_sync(work_dir: &WorkDir, args: &[&str]) -> Result<()> {
-    main(work_dir, args).await
+async fn main_sync(current_dir: PathBuf, args: &[&str]) -> Result<()> {
+    main(current_dir, args).await
 }
 
 #[test]
 fn test_init() -> Result<()> {
     ctftool::init_logging();
     let work_dir = WorkDir::new()?;
-    main_sync(&work_dir, &["init"])?;
-    assert!(main_sync(&work_dir, &["init"]).is_err());
+    main_sync(work_dir.to_path_buf(), &["init"])?;
+    assert!(main_sync(work_dir.to_path_buf(), &["init"]).is_err());
     Ok(())
 }
 
@@ -64,14 +68,14 @@ fn test_init() -> Result<()> {
 fn test_remote() -> Result<()> {
     ctftool::init_logging();
     let work_dir = WorkDir::new()?;
-    main_sync(&work_dir, &["init"])?;
-    main_sync(&work_dir, &["remote", "show"])?;
+    main_sync(work_dir.to_path_buf(), &["init"])?;
+    main_sync(work_dir.to_path_buf(), &["remote", "show"])?;
     let url = "http://localhost.test";
-    main_sync(&work_dir, &["remote", "add", "origin", url])?;
-    assert!(main_sync(&work_dir, &["remote", "add", "origin", url]).is_err());
-    main_sync(&work_dir, &["remote", "show"])?;
-    main_sync(&work_dir, &["remote", "rm", "origin"])?;
-    assert!(main_sync(&work_dir, &["remote", "rm", "origin"]).is_err());
+    main_sync(work_dir.to_path_buf(), &["remote", "add", "origin", url])?;
+    assert!(main_sync(work_dir.to_path_buf(), &["remote", "add", "origin", url]).is_err());
+    main_sync(work_dir.to_path_buf(), &["remote", "show"])?;
+    main_sync(work_dir.to_path_buf(), &["remote", "rm", "origin"])?;
+    assert!(main_sync(work_dir.to_path_buf(), &["remote", "rm", "origin"]).is_err());
     Ok(())
 }
 
@@ -165,16 +169,16 @@ async fn test_fetch(engine: &str) -> Result<()> {
     let server = StaticServer::spawn(root)?;
     let url = format!("http://localhost:{}", server.port);
     let work_dir = WorkDir::new()?;
-    main(&work_dir, &["init"]).await?;
-    main(&work_dir, &["remote", "add", "origin", &url]).await?;
-    let mut ctx = ctf::load(work_dir.temp_dir.path().to_path_buf())?;
+    main(work_dir.to_path_buf(), &["init"]).await?;
+    main(work_dir.to_path_buf(), &["remote", "add", "origin", &url]).await?;
+    let mut ctx = ctf::load(work_dir.to_path_buf())?;
     let remote = ctf::find_remote_mut(&mut ctx.ctf, "origin")?;
     remote.rewrite_rules.push(ctf::RewriteRule {
         regex: "^https://drive.google.com/".into(),
         rep: format!("{}/drive.google.com/", url),
     });
     git::commit(&ctx, "Add rewrite rules")?;
-    main(&work_dir, &["fetch"]).await?;
+    main(work_dir.to_path_buf(), &["fetch"]).await?;
     server.shutdown().await?;
     Ok(())
 }
@@ -203,25 +207,28 @@ async fn test_fetch_insomnihack() -> Result<()> {
 fn test_challenge() -> Result<()> {
     ctftool::init_logging();
     let work_dir = WorkDir::new()?;
-    main_sync(&work_dir, &["init"])?;
+    main_sync(work_dir.to_path_buf(), &["init"])?;
     /* No challenges yet. */
-    main_sync(&work_dir, &["challenge", "show"])?;
+    main_sync(work_dir.to_path_buf(), &["challenge", "show"])?;
     /* Cannot delete non-existent challenge. */
-    assert!(main_sync(&work_dir, &["challenge", "rm", "test"]).is_err());
+    assert!(main_sync(work_dir.to_path_buf(), &["challenge", "rm", "test"]).is_err());
     /* Cannot add a challenge unless there is a directory. */
-    assert!(main_sync(&work_dir, &["challenge", "add", "test"]).is_err());
+    assert!(main_sync(work_dir.to_path_buf(), &["challenge", "add", "test"]).is_err());
     /* Create a directory and add a challenge. */
-    create_dir(work_dir.temp_dir.path().join("test"))?;
-    main_sync(&work_dir, &["challenge", "add", "test"])?;
+    let challenge_dir = work_dir.to_path_buf().join("test");
+    create_dir(&challenge_dir)?;
+    main_sync(work_dir.to_path_buf(), &["challenge", "add", "test"])?;
     main_sync(
-        &work_dir,
+        work_dir.to_path_buf(),
         &["challenge", "set-description", "test", "test description"],
     )?;
     /* One challenge. */
-    main_sync(&work_dir, &["remote", "show"])?;
+    main_sync(work_dir.to_path_buf(), &["remote", "show"])?;
     /* Delete the challenge. */
-    main_sync(&work_dir, &["challenge", "rm", "test"])?;
+    main_sync(work_dir.to_path_buf(), &["challenge", "rm", "test"])?;
     /* No challenges. */
-    main_sync(&work_dir, &["remote", "show"])?;
+    main_sync(work_dir.to_path_buf(), &["remote", "show"])?;
+    /* Add the challenge again using . */
+    main_sync(challenge_dir, &["challenge", "add", "."])?;
     Ok(())
 }

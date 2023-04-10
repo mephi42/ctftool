@@ -7,6 +7,7 @@ use crate::ctf;
 use crate::ctf::{Challenge, CTF};
 use crate::git;
 use crate::option;
+use crate::path::relativize;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -76,16 +77,7 @@ fn resolve<'a>(
     if !path.is_file() {
         bail!("Binary {} does not exist", path.display());
     }
-    let canonical_root = root.canonicalize()?;
-    let canonical_path = if path.is_absolute() {
-        path
-    } else {
-        cwd.join(path)
-    }
-    .canonicalize()?;
-    let relative_path = canonical_path
-        .strip_prefix(canonical_root)
-        .map_err(|_| anyhow!("{} is not in the CTF directory", canonical_path.display()))?;
+    let (canonical_path, relative_path) = relativize(root, cwd, path)?;
     let os_challenge_name = relative_path
         .components()
         .next()
