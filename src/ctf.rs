@@ -2,6 +2,7 @@ use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
+use crate::option;
 use crate::os_str::os_str_to_str;
 use crate::path::relativize;
 use cookie_store::CookieStore;
@@ -79,7 +80,7 @@ pub struct Service {
     #[serde(default)]
     pub name: Option<String>,
     #[serde(default)]
-    pub url: Option<String>,
+    pub url: String,
 }
 
 #[derive(Default, Serialize, Deserialize)]
@@ -339,7 +340,7 @@ pub fn services_from_description(description: &str) -> Result<Vec<Service>> {
     for nc in nc_regex.captures_iter(description) {
         services.push(Service {
             name: None,
-            url: Some(format!("nc://{}:{}", &nc[1], &nc[2])),
+            url: format!("nc://{}:{}", &nc[1], &nc[2]),
         });
     }
     Ok(services)
@@ -399,9 +400,7 @@ fn merge_services(service: &mut Service, service2: Service) {
     if service2.name.is_some() {
         service.name = service2.name;
     }
-    if service2.url.is_some() {
-        service.url = service2.url;
-    }
+    service.url = service2.url;
 }
 
 fn merge_challenges(challenge: &mut Challenge, challenge2: Challenge) {
@@ -420,8 +419,7 @@ fn merge_challenges(challenge: &mut Challenge, challenge2: Challenge) {
     }
     for service2 in challenge2.services {
         let existing = challenge.services.iter_mut().find(|service| {
-            service.name.is_some() && service.name == service2.name
-                || service.url.is_some() && service.url == service2.url
+            service.name.is_some() && service.name == service2.name || service.url == service2.url
         });
         match existing {
             Some(service) => merge_services(service, service2),
@@ -578,4 +576,18 @@ pub fn resolve_challenge_mut<'a>(
     let challenge = find_challenge_mut(ctf, challenge_name)?;
     let rest = relative_path.components().skip(1).collect::<PathBuf>();
     Ok((challenge, rest))
+}
+
+pub fn try_find_service_mut<'a>(
+    challenge: &'a mut Challenge,
+    name: &str,
+) -> Option<&'a mut Service> {
+    challenge
+        .services
+        .iter_mut()
+        .find(|service| option::contains(&service.name, &name))
+}
+
+pub fn find_service_mut<'a>(challenge: &'a mut Challenge, name: &str) -> Result<&'a mut Service> {
+    try_find_service_mut(challenge, name).ok_or_else(|| anyhow!("No such service: {}", name))
 }

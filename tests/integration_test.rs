@@ -266,3 +266,26 @@ fn test_binary() -> Result<()> {
     ));
     Ok(())
 }
+
+#[test]
+fn test_service() -> Result<()> {
+    ctftool::init_logging();
+    let work_dir = WorkDir::new()?;
+    main_sync(work_dir.to_path_buf(), &["init"])?;
+    let chal = work_dir.to_path_buf().join("chal");
+    create_dir(&chal)?;
+    main_sync(work_dir.to_path_buf(), &["challenge", "add", "chal"])?;
+    main_sync(chal.clone(), &["service", "show"])?;
+    main_sync(
+        chal.clone(),
+        &["service", "add", "default", "http://1.2.3.4:5678"],
+    )?;
+    assert!(main_sync(chal.clone(), &["service", "add", "default"]).is_err());
+    main_sync(
+        chal.clone(),
+        &["service", "set-url", "default", "http://9.10.11.12:1314"],
+    )?;
+    main_sync(chal.clone(), &["service", "rm", "default"])?;
+    assert!(main_sync(chal.clone(), &["service", "rm", "default"]).is_err());
+    Ok(())
+}
