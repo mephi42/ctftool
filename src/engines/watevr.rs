@@ -72,11 +72,11 @@ Description: {}",
                 .iter()
                 .map(|url| ctf::Service {
                     name: None,
-                    url: Some(url.into()),
+                    url: url.into(),
                 })
                 .chain(challenge.netcat_ips.iter().map(|url| ctf::Service {
                     name: None,
-                    url: Some(format!("nc://{}", url)),
+                    url: format!("nc://{}", url),
                 }))
                 .collect(),
         })

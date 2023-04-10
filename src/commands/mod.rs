@@ -6,3 +6,4 @@ pub mod fetch;
 pub mod init;
 pub mod login;
 pub mod remote;
+pub mod service;

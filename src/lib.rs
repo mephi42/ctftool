@@ -56,6 +56,10 @@ enum SubCommand {
     /// Manages Docker container
     #[clap(name = "docker")]
     Docker(commands::docker::Docker),
+
+    /// Manages services
+    #[clap(name = "service")]
+    Service(commands::service::Service),
 }
 
 pub async fn main<I, T>(args: I, current_dir: PathBuf) -> Result<()>
@@ -73,6 +77,7 @@ where
         SubCommand::Binary(binary) => commands::binary::run(binary, current_dir).await,
         SubCommand::Challenge(challenge) => commands::challenge::run(challenge, current_dir),
         SubCommand::Docker(docker) => commands::docker::run(docker, current_dir).await,
+        SubCommand::Service(service) => commands::service::run(service, current_dir),
     }
 }
 
