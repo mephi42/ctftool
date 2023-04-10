@@ -12,6 +12,7 @@ pub mod engines;
 pub mod git;
 pub mod http;
 pub mod option;
+pub mod path;
 pub mod subprocess;
 
 /// Automates all the boring CTF stuff
