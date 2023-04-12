@@ -7,7 +7,8 @@ use crate::ctf;
 use crate::ctf::{Challenge, CTF};
 use crate::git;
 use crate::option;
-use crate::path::relativize;
+use crate::os_str::os_str_to_str;
+use crate::path::{path_to_str, relativize};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -88,14 +89,10 @@ fn resolve<'a>(
             )
         })?
         .as_os_str();
-    let challenge_name = os_challenge_name
-        .to_str()
-        .ok_or_else(|| anyhow!("{:?} contains non-UTF-8 characters", os_challenge_name))?;
+    let challenge_name = os_str_to_str(os_challenge_name)?;
     let challenge = ctf::find_challenge_mut(ctf, challenge_name)?;
     let binary_name_path = relative_path.components().skip(1).collect::<PathBuf>();
-    let binary_name = binary_name_path
-        .to_str()
-        .ok_or_else(|| anyhow!("Non-UTF-8 characters in {}", binary_name_path.display()))?;
+    let binary_name = path_to_str(&binary_name_path)?;
     Ok((challenge, canonical_path, binary_name.to_string()))
 }
 

@@ -12,6 +12,7 @@ pub mod engines;
 pub mod git;
 pub mod http;
 pub mod option;
+pub mod os_str;
 pub mod path;
 pub mod subprocess;
 

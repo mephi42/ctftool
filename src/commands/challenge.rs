@@ -1,6 +1,7 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{bail, Result};
 use clap::Parser;
 
+use crate::path::path_to_str;
 use crate::path::relativize;
 use crate::{ctf, git};
 use std::path::{Path, PathBuf};
@@ -57,11 +58,7 @@ pub struct Rm {
 /// Resolve challenge name
 fn resolve(root: &Path, cwd: &Path, s: String) -> Result<String> {
     let (_, relative_path) = relativize(root, cwd, PathBuf::from(s))?;
-    let os_relative_path = relative_path.as_os_str();
-    os_relative_path
-        .to_str()
-        .ok_or_else(|| anyhow!("{:?} contains non-UTF-8 characters", os_relative_path))
-        .map(|x| x.into())
+    path_to_str(&relative_path).map(|s| s.into())
 }
 
 pub fn run(challenge: Challenge, current_dir: PathBuf) -> Result<()> {

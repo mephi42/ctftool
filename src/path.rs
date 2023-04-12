@@ -1,3 +1,4 @@
+use crate::os_str::os_str_to_str;
 use anyhow::{anyhow, Result};
 use std::path::{Path, PathBuf};
 
@@ -14,4 +15,8 @@ pub fn relativize(root: &Path, cwd: &Path, path: PathBuf) -> Result<(PathBuf, Pa
         .map_err(|_| anyhow!("{} is not in the CTF directory", &canonical_path.display()))?
         .to_path_buf();
     Ok((canonical_path, relative_path))
+}
+
+pub fn path_to_str(path: &Path) -> Result<&str> {
+    os_str_to_str(path.as_os_str())
 }
