@@ -3,6 +3,7 @@ use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
 use crate::os_str::os_str_to_str;
+use crate::path::relativize;
 use cookie_store::CookieStore;
 use log::warn;
 use regex::Regex;
@@ -93,11 +94,20 @@ pub struct RemoteCredentials {
 }
 
 pub struct Context {
+    /// Parsed .ctf file
     pub ctf: CTF,
+
+    /// Parsed .ctfcredentials file
     pub credentials: Credentials,
+
+    /// Root directory (contains .git)
     pub root: PathBuf,
-    pub path: Vec<String>,
+
+    /// Current directory
     pub cwd: PathBuf,
+
+    /// Components of cwd relative to root
+    pub path: Vec<String>,
 }
 
 fn load_credentials(root: &Path) -> Result<Credentials> {
@@ -124,8 +134,8 @@ pub fn load(cwd: PathBuf) -> Result<Context> {
                     ctf,
                     credentials: load_credentials(&root)?,
                     root,
-                    path,
                     cwd,
+                    path,
                 });
             }
             Err(e) if e.kind() == ErrorKind::NotFound => {
@@ -545,4 +555,27 @@ pub fn set_default_alternative(
     )?;
     binary.default_alternative = Some(alternative_name.to_owned());
     Ok(())
+}
+
+pub fn resolve_challenge_mut<'a>(
+    ctf: &'a mut CTF,
+    root: &Path,
+    cwd: &Path,
+    path: PathBuf,
+) -> Result<(&'a mut Challenge, PathBuf)> {
+    let (canonical_path, relative_path) = relativize(root, cwd, path)?;
+    let os_challenge_name = relative_path
+        .components()
+        .next()
+        .ok_or_else(|| {
+            anyhow!(
+                "{} is not in a challenge directory",
+                canonical_path.display()
+            )
+        })?
+        .as_os_str();
+    let challenge_name = os_str_to_str(os_challenge_name)?;
+    let challenge = find_challenge_mut(ctf, challenge_name)?;
+    let rest = relative_path.components().skip(1).collect::<PathBuf>();
+    Ok((challenge, rest))
 }
