@@ -232,3 +232,37 @@ fn test_challenge() -> Result<()> {
     main_sync(challenge_dir, &["challenge", "add", "."])?;
     Ok(())
 }
+
+fn contains(haystack: &[u8], needle: &[u8]) -> bool {
+    haystack
+        .windows(needle.len())
+        .find(|w| w == &needle)
+        .is_some()
+}
+
+#[test]
+fn test_binary() -> Result<()> {
+    ctftool::init_logging();
+    let work_dir = WorkDir::new()?;
+    main_sync(work_dir.to_path_buf(), &["init"])?;
+    let chal = work_dir.to_path_buf().join("chal");
+    create_dir(&chal)?;
+    main_sync(work_dir.to_path_buf(), &["challenge", "add", "chal"])?;
+    std::fs::write(
+        chal.join("exe"),
+        "GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0",
+    )?;
+    main_sync(chal.clone(), &["binary", "add", "exe"])?;
+    main_sync(chal.clone(), &["docker", "init"])?;
+    assert!(contains(
+        &std::fs::read(chal.join("docker-compose.yml"))?,
+        b"distro: ubuntu:22.04"
+    ));
+    main_sync(chal.clone(), &["binary", "rm", "exe.orig"])?;
+    main_sync(chal.clone(), &["docker", "init"])?;
+    assert!(contains(
+        &std::fs::read(chal.join("docker-compose.yml"))?,
+        b"distro: ubuntu:latest"
+    ));
+    Ok(())
+}

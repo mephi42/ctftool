@@ -4,11 +4,10 @@ use console::style;
 use anyhow::{anyhow, bail, Result};
 
 use crate::ctf;
-use crate::ctf::{Challenge, CTF};
+use crate::ctf::{resolve_challenge_mut, Challenge, CTF};
 use crate::git;
 use crate::option;
-use crate::os_str::os_str_to_str;
-use crate::path::{path_to_str, relativize};
+use crate::path::path_to_str;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -73,27 +72,14 @@ fn resolve<'a>(
     root: &Path,
     cwd: &Path,
     s: &str,
-) -> Result<(&'a mut Challenge, PathBuf, String)> {
-    let path = PathBuf::from(s);
-    if !path.is_file() {
-        bail!("Binary {} does not exist", path.display());
+) -> Result<(&'a mut Challenge, String, PathBuf)> {
+    let (challenge, rest) = resolve_challenge_mut(ctf, root, cwd, PathBuf::from(s))?;
+    let binary_name = path_to_str(&rest)?.to_string();
+    let binary_path = root.join(&challenge.name).join(rest);
+    if !binary_path.is_file() {
+        bail!("Binary {} does not exist", binary_path.display());
     }
-    let (canonical_path, relative_path) = relativize(root, cwd, path)?;
-    let os_challenge_name = relative_path
-        .components()
-        .next()
-        .ok_or_else(|| {
-            anyhow!(
-                "{} is not in a challenge directory",
-                canonical_path.display()
-            )
-        })?
-        .as_os_str();
-    let challenge_name = os_str_to_str(os_challenge_name)?;
-    let challenge = ctf::find_challenge_mut(ctf, challenge_name)?;
-    let binary_name_path = relative_path.components().skip(1).collect::<PathBuf>();
-    let binary_name = path_to_str(&binary_name_path)?;
-    Ok((challenge, canonical_path, binary_name.to_string()))
+    Ok((challenge, binary_name, binary_path))
 }
 
 pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
@@ -116,7 +102,7 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
             }
         }
         SubCommand::Add(add) => {
-            let (challenge, p, name) =
+            let (challenge, name, path) =
                 resolve(&mut context.ctf, &context.root, &context.cwd, &add.name)?;
             let mut pos = 0;
             let mut found = false;
@@ -148,9 +134,9 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
                 pos += 1;
             }
             if !found {
-                let mut orig = p.as_os_str().to_os_string();
+                let mut orig = path.as_os_str().to_os_string();
                 orig.push(".orig");
-                fs::copy(p, orig)?;
+                fs::copy(path, orig)?;
                 challenge.binaries.push(ctf::Binary {
                     name,
                     alternatives: vec![ctf::BinaryAlternative {
@@ -164,7 +150,7 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
             git::commit(&context, &format!("Add binary {}", add.name))?;
         }
         SubCommand::Rm(rm) => {
-            let (challenge, _, s) =
+            let (challenge, s, _) =
                 resolve(&mut context.ctf, &context.root, &context.cwd, &rm.name)?;
             let (binary_name, alternative_name) = split(&s)?;
             let binary = ctf::find_binary_mut(&mut challenge.binaries, binary_name)?;
@@ -197,7 +183,7 @@ pub async fn run(binary: Binary, current_dir: PathBuf) -> Result<()> {
             git::commit(&context, &format!("Remove binary {}", rm.name))?;
         }
         SubCommand::Default(default) => {
-            let (challenge, _, s) =
+            let (challenge, s, _) =
                 resolve(&mut context.ctf, &context.root, &context.cwd, &default.name)?;
             let (binary_name, alternative_name) = split(&s)?;
             let challenge_name = challenge.name.to_owned();

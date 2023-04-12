@@ -31,8 +31,8 @@ pub fn run(_init: Init, root: PathBuf) -> Result<()> {
         ctf,
         credentials: ctf::Credentials::default(),
         root,
-        path: Vec::new(),
         cwd,
+        path: Vec::new(),
     };
     git::commit(&context, "Initial commit")?;
     Ok(())
