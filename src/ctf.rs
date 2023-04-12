@@ -2,6 +2,7 @@ use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
+use crate::os_str::os_str_to_str;
 use cookie_store::CookieStore;
 use log::warn;
 use regex::Regex;
@@ -129,12 +130,7 @@ pub fn load(cwd: PathBuf) -> Result<Context> {
             }
             Err(e) if e.kind() == ErrorKind::NotFound => {
                 match root.file_name() {
-                    Some(component) => path.push(
-                        component
-                            .to_str()
-                            .ok_or_else(|| anyhow!("Non-UTF-8 path"))?
-                            .to_owned(),
-                    ),
+                    Some(component) => path.push(os_str_to_str(component)?.to_owned()),
                     None => {
                         break Err(anyhow!(
                             "No .ctf file in the current or any of the parent directories"
