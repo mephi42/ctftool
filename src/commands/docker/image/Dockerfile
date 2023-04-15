@@ -3,7 +3,7 @@ ARG distro=ubuntu:latest
 FROM $distro
 ARG libc_version=*
 ENV DEBIAN_FRONTEND=noninteractive
-RUN sed -i -e 's/^# deb-src /deb-src /g' /etc/apt/sources.list
+RUN sed -i -e '/^deb /{p;s/^deb /deb-src /g}' /etc/apt/sources.list
 RUN apt-get -y update && \
     apt-get -y install --no-install-recommends \
         build-essential \
@@ -32,7 +32,7 @@ RUN apt-get -y update && \
         sudo \
         vim \
         wget
-RUN cd /usr/src && apt-get source libc6="$libc_version"
+RUN cd /usr/src && apt-get source libc6="$(dpkg -s libc6 | awk '/^Version:/ { print $2; }')"
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install \
         pwntools \
