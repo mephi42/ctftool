@@ -67,6 +67,7 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
     };
     let challenge = ctf::find_challenge(&context.ctf, challenge_name)?;
     let challenge_dir = context.root.join(challenge_name);
+    let yml = "docker-compose.yml";
     match docker.subcmd {
         SubCommand::Init(_init) => {
             let mut maybe_packages = None;
@@ -105,23 +106,23 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
                 serde_yaml::Value::String("args".into()),
                 serde_yaml::Value::Mapping(args),
             );
-            fs::write(
-                challenge_dir.join("docker-compose.yml"),
-                serde_yaml::to_string(&compose)?,
-            )?;
+            fs::write(challenge_dir.join(yml), serde_yaml::to_string(&compose)?)?;
             git::commit(
                 &context,
-                &format!(
-                    "Add Dockerfile and docker-compose.yml for {}",
-                    challenge_name
-                ),
+                &format!("Add Dockerfile and {} for {}", yml, challenge_name),
             )?;
         }
         SubCommand::Exec(exec) => {
             subprocess::check_call(Command::new("xhost").args(["+local:root"]))?;
             subprocess::check_call(
                 Command::new("docker")
-                    .args(["compose", "up", "--build", "--detach"])
+                    .args([
+                        "compose",
+                        &format!("--file={}", yml),
+                        "up",
+                        "--build",
+                        "--detach",
+                    ])
                     .current_dir(&challenge_dir),
             )?;
             subprocess::check_call(
@@ -129,6 +130,7 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
                     .args(
                         [
                             "compose".to_string(),
+                            format!("--file={}", yml),
                             "exec".to_string(),
                             "main".to_string(),
                             exec.command,
@@ -142,12 +144,12 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
         }
         SubCommand::Rm(_rm) => subprocess::check_call(
             Command::new("docker")
-                .args(["compose", "down"])
+                .args(["compose", &format!("--file={}", yml), "down"])
                 .current_dir(&challenge_dir),
         )?,
         SubCommand::Rmi(_rmi) => subprocess::check_call(
             Command::new("docker")
-                .args(["compose", "down", "--rmi=local"])
+                .args(["compose", &format!("--file={}", yml), "down", "--rmi=local"])
                 .current_dir(&challenge_dir),
         )?,
     }
