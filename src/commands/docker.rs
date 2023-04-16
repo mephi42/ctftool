@@ -92,6 +92,10 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
             let build = get_mapping(main, "build")?;
             let mut args = serde_yaml::Mapping::new();
             args.insert(
+                serde_yaml::Value::String("arch".into()),
+                serde_yaml::Value::String(packages.arch.into()),
+            );
+            args.insert(
                 serde_yaml::Value::String("distro".into()),
                 serde_yaml::Value::String(format!(
                     "{}:{}",

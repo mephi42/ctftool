@@ -1,4 +1,11 @@
 use anyhow::{anyhow, Result};
+use elf::abi::{
+    EM_386, EM_AARCH64, EM_ALPHA, EM_ARM, EM_AVR32, EM_IA_64, EM_MIPS, EM_PARISC, EM_PPC, EM_PPC64,
+    EM_RISCV, EM_S390, EM_SH, EM_SPARC, EM_X86_64,
+};
+use elf::endian::{AnyEndian, EndianParse};
+use elf::file::{Class, FileHeader};
+use elf::ElfBytes;
 use lazy_static::lazy_static;
 use regex::bytes::Regex;
 use std::default::Default;
@@ -8,6 +15,7 @@ use std::str;
 
 /// Distro and package versions.
 pub struct Packages {
+    pub arch: &'static str,
     pub distro: String,
     pub distro_version: String,
     pub libc_version: String,
@@ -31,6 +39,7 @@ fn try_regex_1(result: &mut Option<String>, regex: &Regex, bytes: &[u8]) -> Resu
 /// Various information extracted from a binary.
 #[derive(Default)]
 struct BinaryInfo {
+    ehdr: Option<FileHeader<AnyEndian>>,
     debian_gcc_version: Option<String>,
     debian_libc_version: Option<String>,
     ubuntu_gcc_version: Option<String>,
@@ -50,11 +59,76 @@ impl BinaryInfo {
     fn analyze(path: &PathBuf) -> Result<BinaryInfo> {
         let mut result = BinaryInfo::default();
         let bytes = fs::read(path)?;
+        if let Ok(elf) = ElfBytes::<AnyEndian>::minimal_parse(&bytes) {
+            result.ehdr = Some(elf.ehdr);
+        }
         try_regex_1(&mut result.debian_gcc_version, &DEBIAN_GCC_REGEX, &bytes)?;
         try_regex_1(&mut result.debian_libc_version, &DEBIAN_LIBC_REGEX, &bytes)?;
         try_regex_1(&mut result.ubuntu_gcc_version, &UBUNTU_GCC_REGEX, &bytes)?;
         try_regex_1(&mut result.ubuntu_libc_version, &UBUNTU_LIBC_REGEX, &bytes)?;
         Ok(result)
+    }
+}
+
+fn get_debian_arch_str(ehdr: &FileHeader<AnyEndian>) -> Option<&'static str> {
+    if ehdr.e_machine == EM_386 {
+        Some("i386")
+    } else if ehdr.e_machine == EM_AARCH64 {
+        Some("arm64")
+    } else if ehdr.e_machine == EM_ALPHA {
+        Some("alpha")
+    } else if ehdr.e_machine == EM_ARM {
+        Some("armhf")
+    } else if ehdr.e_machine == EM_AVR32 {
+        Some("avr32")
+    } else if ehdr.e_machine == EM_IA_64 {
+        Some("ia64")
+    } else if ehdr.e_machine == EM_MIPS {
+        if ehdr.class == Class::ELF32 {
+            if ehdr.endianness.is_big() {
+                Some("mips")
+            } else {
+                Some("mipsel")
+            }
+        } else if ehdr.class == Class::ELF64 {
+            Some("mips64el")
+        } else {
+            None
+        }
+    } else if ehdr.e_machine == EM_PARISC {
+        Some("hppa")
+    } else if ehdr.e_machine == EM_PPC {
+        Some("powerpc")
+    } else if ehdr.e_machine == EM_PPC64 {
+        if ehdr.endianness.is_big() {
+            Some("ppc64")
+        } else {
+            Some("ppc64el")
+        }
+    } else if ehdr.e_machine == EM_RISCV {
+        Some("riscv64")
+    } else if ehdr.e_machine == EM_S390 {
+        if ehdr.class == Class::ELF32 {
+            Some("s390")
+        } else if ehdr.class == Class::ELF64 {
+            Some("s390x")
+        } else {
+            None
+        }
+    } else if ehdr.e_machine == EM_SH {
+        Some("sh4")
+    } else if ehdr.e_machine == EM_SPARC {
+        if ehdr.class == Class::ELF32 {
+            Some("sparc")
+        } else if ehdr.class == Class::ELF64 {
+            Some("sparc64")
+        } else {
+            None
+        }
+    } else if ehdr.e_machine == EM_X86_64 {
+        Some("x86_64")
+    } else {
+        None
     }
 }
 
@@ -159,9 +233,12 @@ fn get_ubuntu_version(info: &BinaryInfo) -> Option<&'static str> {
     ])
 }
 
+static DEFAULT_ARCH: &str = "amd64";
+
 impl Default for Packages {
     fn default() -> Packages {
         Packages {
+            arch: DEFAULT_ARCH,
             distro: "ubuntu".into(),
             distro_version: "latest".into(),
             libc_version: "*".into(),
@@ -171,8 +248,13 @@ impl Default for Packages {
 
 pub fn get_packages(path: &PathBuf) -> Result<Option<Packages>> {
     let info = BinaryInfo::analyze(path)?;
+    let arch = info
+        .ehdr
+        .and_then(|ehdr| get_debian_arch_str(&ehdr))
+        .unwrap_or(DEFAULT_ARCH);
     if let Some(debian_version) = get_debian_version(&info) {
         return Ok(Some(Packages {
+            arch,
             distro: "debian".into(),
             distro_version: debian_version.into(),
             libc_version: info.debian_libc_version.unwrap_or_else(|| "*".into()),
@@ -180,6 +262,7 @@ pub fn get_packages(path: &PathBuf) -> Result<Option<Packages>> {
     }
     if let Some(ubuntu_version) = get_ubuntu_version(&info) {
         return Ok(Some(Packages {
+            arch,
             distro: "ubuntu".into(),
             distro_version: ubuntu_version.into(),
             libc_version: info.ubuntu_libc_version.unwrap_or_else(|| "*".into()),
