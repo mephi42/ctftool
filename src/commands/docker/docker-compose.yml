@@ -10,6 +10,7 @@ services:
       - NO_AT_BRIDGE=1  # Couldn't connect to accessibility bus
       - PWNLIB_NOTERM=1
       - PYTHONIOENCODING=utf-8
+      - LC_ALL=C.UTF-8
     working_dir: $PWD
     init: true
     command: sleep inf
