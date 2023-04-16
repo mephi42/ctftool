@@ -30,6 +30,7 @@ RUN apt-get -y update && \
         python3 \
         python3-dev \
         python3-pip \
+        qemu-user \
         strace \
         sudo \
         vim \
