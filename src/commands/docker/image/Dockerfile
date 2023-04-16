@@ -1,9 +1,11 @@
 # syntax=docker/dockerfile:1
 ARG distro=ubuntu:latest
 FROM $distro
+ARG arch=amd64
 ARG libc_version=*
 ENV DEBIAN_FRONTEND=noninteractive
 RUN sed -i -e '/^deb /{p;s/^deb /deb-src /g}' /etc/apt/sources.list
+RUN dpkg --add-architecture "$arch"
 RUN apt-get -y update && \
     apt-get -y install --no-install-recommends \
         build-essential \
@@ -12,14 +14,14 @@ RUN apt-get -y update && \
         dconf-cli \
         dpkg-dev \
         file \
-        gdb \
+        gdb-multiarch \
         gdbserver \
         git \
         gnome-terminal \
         libc-dev-bin="$libc_version" \
-        libc6="$libc_version" \
-        libc6-dbg="$libc_version" \
-        libc6-dev="$libc_version" \
+        libc6:"$arch"="$libc_version" \
+        libc6-dbg:"$arch"="$libc_version" \
+        libc6-dev:"$arch"="$libc_version" \
         libcanberra-gtk3-module \
         libffi-dev \
         libssl-dev \
@@ -32,7 +34,7 @@ RUN apt-get -y update && \
         sudo \
         vim \
         wget
-RUN cd /usr/src && apt-get source libc6="$(dpkg -s libc6 | awk '/^Version:/ { print $2; }')"
+RUN cd /usr/src && apt-get source libc6="$(dpkg -s libc6:"$arch" | awk '/^Version:/ { print $2; }')"
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install \
         pwntools \

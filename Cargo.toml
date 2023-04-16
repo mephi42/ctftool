@@ -10,6 +10,7 @@ clap = { version = "4.2.1", features = ["derive"] }
 cookie = "0.16.2"
 cookie_store = "0.19.0"
 console = "0.15.5"
+elf = "0.7.2"
 env_logger = "0.10.0"
 futures = "0.3.28"
 hex = "0.4.3"
