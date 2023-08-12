@@ -126,7 +126,7 @@ fn get_debian_arch_str(ehdr: &FileHeader<AnyEndian>) -> Option<&'static str> {
             None
         }
     } else if ehdr.e_machine == EM_X86_64 {
-        Some("x86_64")
+        Some("amd64")
     } else {
         None
     }
