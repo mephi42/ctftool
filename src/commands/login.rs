@@ -19,7 +19,7 @@ pub struct Login {
 
 pub async fn run(login: Login, current_dir: PathBuf) -> Result<()> {
     let mut context = ctf::load(current_dir)?;
-    let mut remote = ctf::find_remote_mut(&mut context.ctf, &login.name)?;
+    let remote = ctf::find_remote_mut(&mut context.ctf, &login.name)?;
     print!("Login: ");
     stdout().flush()?;
     let mut username = String::new();

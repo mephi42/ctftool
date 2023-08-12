@@ -210,7 +210,7 @@ pub async fn run(checkout: Checkout, current_dir: PathBuf) -> Result<()> {
             Ok(Some(checksum)) => {
                 let challenge = ctf::find_challenge_mut(&mut context.ctf, &key.challenge)?;
                 let binary = ctf::find_binary_mut(&mut challenge.binaries, &key.binary)?;
-                let mut alternative = ctf::find_alternative_mut(binary, &key.alternative)?;
+                let alternative = ctf::find_alternative_mut(binary, &key.alternative)?;
                 alternative.checksum = Some(checksum);
             }
             Ok(None) => {}

@@ -18,7 +18,7 @@ pub struct Fetch {
 
 pub async fn run(fetch: Fetch, current_dir: PathBuf) -> Result<()> {
     let mut context = ctf::load(current_dir)?;
-    let mut remote = ctf::find_remote_mut(&mut context.ctf, &fetch.name)?;
+    let remote = ctf::find_remote_mut(&mut context.ctf, &fetch.name)?;
     let client = http::mk_client(&remote.rewrite_rules)?;
     let mut cookie_store = CookieStore::default();
     for remote_credentials in &context.credentials.remotes {
