@@ -37,6 +37,7 @@ RUN apt-get -y update && \
         vim \
         wget
 RUN cd /usr/src && apt-get source libc6="$(dpkg -s libc6:"$arch" | awk '/^Version:/ { print $2; }')"
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install \
         pwntools \
