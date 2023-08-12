@@ -4,7 +4,8 @@ FROM $distro
 ARG arch=amd64
 ARG libc_version=*
 ENV DEBIAN_FRONTEND=noninteractive
-RUN sed -i -e '/^deb /{p;s/^deb /deb-src /g}' /etc/apt/sources.list
+RUN [ ! -e /etc/apt/sources.list ] || sed -i -e '/^deb /{p;s/^deb /deb-src /g}' /etc/apt/sources.list
+RUN [ ! -e /etc/apt/sources.list.d/debian.sources ] || sed -i -e 's/^Types: deb$/Types: deb deb-src/g' /etc/apt/sources.list.d/debian.sources
 RUN dpkg --add-architecture "$arch"
 RUN apt-get -y update && \
     apt-get -y install --no-install-recommends \
