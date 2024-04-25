@@ -36,7 +36,7 @@ async fn fetch(
     let mut ctf = ctf::CTF::default();
     let url = http::build_url(&remote.url, &["api", "watsup"])?;
     let request = client
-        .get(&url.to_string())
+        .get(url.to_string())
         .add_cookie_header(&url, cookie_store);
     let response = client.execute(request.build()?).await?;
     response.error_for_status_ref()?;
