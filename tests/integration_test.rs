@@ -112,16 +112,15 @@ impl StaticServer {
                     info!("#{} {} {}", request_id, req.method(), req.uri());
                     let root = root.clone();
                     async move {
-                        let response = match StaticServer::handle_request(&root, req).await {
-                            Ok(response) => response,
-                            Err(e) => {
+                        let response = StaticServer::handle_request(&root, req)
+                            .await
+                            .unwrap_or_else(|e| {
                                 warn!("{}", e);
                                 Response::builder()
                                     .status(500)
                                     .body(Body::from(""))
                                     .unwrap()
-                            }
-                        };
+                            });
                         info!("#{} {}", request_id, response.status());
                         Ok::<_, Error>(response)
                     }
