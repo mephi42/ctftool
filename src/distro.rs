@@ -14,15 +14,19 @@ use std::path::PathBuf;
 use std::str;
 
 /// Distro and package versions.
+#[derive(Default)]
 pub struct Packages {
-    pub arch: &'static str,
-    pub distro: String,
-    pub distro_version: String,
-    pub libc_version: String,
+    pub arch: Option<&'static str>,
+    pub distro: Option<&'static str>,
+    pub distro_version: Option<&'static str>,
+    pub libc_version: Option<String>,
 }
 
 /// Try to match a regex that has exactly one capture group.
 fn try_regex_1(result: &mut Option<String>, regex: &Regex, bytes: &[u8]) -> Result<()> {
+    if result.is_some() {
+        return Ok(());
+    }
     if let Some(m) = regex.captures_iter(bytes).next() {
         *result = Some(
             str::from_utf8(
@@ -50,9 +54,11 @@ lazy_static! {
     static ref DEBIAN_GCC_REGEX: Regex = Regex::new(r"GCC: \(Debian (.+?)\)").unwrap();
     static ref DEBIAN_LIBC_REGEX: Regex =
         Regex::new(r"GNU C Library \(Debian GLIBC (.+?)\)").unwrap();
+    static ref DEBIAN_LDSO_REGEX: Regex = Regex::new(r"ld\.so \(Debian GLIBC (.+?)\)").unwrap();
     static ref UBUNTU_GCC_REGEX: Regex = Regex::new(r"GCC: \(Ubuntu (.+?)\)").unwrap();
     static ref UBUNTU_LIBC_REGEX: Regex =
         Regex::new(r"GNU C Library \(Ubuntu GLIBC (.+?)\)").unwrap();
+    static ref UBUNTU_LDSO_REGEX: Regex = Regex::new(r"ld\.so \(Ubuntu GLIBC (.+?)\)").unwrap();
 }
 
 impl BinaryInfo {
@@ -64,8 +70,10 @@ impl BinaryInfo {
         }
         try_regex_1(&mut result.debian_gcc_version, &DEBIAN_GCC_REGEX, &bytes)?;
         try_regex_1(&mut result.debian_libc_version, &DEBIAN_LIBC_REGEX, &bytes)?;
+        try_regex_1(&mut result.debian_libc_version, &DEBIAN_LDSO_REGEX, &bytes)?;
         try_regex_1(&mut result.ubuntu_gcc_version, &UBUNTU_GCC_REGEX, &bytes)?;
         try_regex_1(&mut result.ubuntu_libc_version, &UBUNTU_LIBC_REGEX, &bytes)?;
+        try_regex_1(&mut result.ubuntu_libc_version, &UBUNTU_LDSO_REGEX, &bytes)?;
         Ok(result)
     }
 }
@@ -233,18 +241,10 @@ fn get_ubuntu_version(info: &BinaryInfo) -> Option<&'static str> {
     ])
 }
 
-static DEFAULT_ARCH: &str = "amd64";
-
-impl Default for Packages {
-    fn default() -> Packages {
-        Packages {
-            arch: DEFAULT_ARCH,
-            distro: "ubuntu".into(),
-            distro_version: "latest".into(),
-            libc_version: "*".into(),
-        }
-    }
-}
+pub static DEFAULT_ARCH: &str = "amd64";
+pub static DEFAULT_DISTRO: &str = "ubuntu";
+pub static DEFAULT_DISTRO_VERSION: &str = "latest";
+pub static DEFAULT_LIBC_VERSION: &str = "*";
 
 pub fn get_packages(path: &PathBuf) -> Result<Option<Packages>> {
     let info = BinaryInfo::analyze(path)?;
@@ -254,19 +254,30 @@ pub fn get_packages(path: &PathBuf) -> Result<Option<Packages>> {
         .unwrap_or(DEFAULT_ARCH);
     if let Some(debian_version) = get_debian_version(&info) {
         return Ok(Some(Packages {
-            arch,
-            distro: "debian".into(),
-            distro_version: debian_version.into(),
-            libc_version: info.debian_libc_version.unwrap_or_else(|| "*".into()),
+            arch: Some(arch),
+            distro: Some("debian"),
+            distro_version: Some(debian_version),
+            libc_version: info.debian_libc_version,
         }));
     }
     if let Some(ubuntu_version) = get_ubuntu_version(&info) {
         return Ok(Some(Packages {
-            arch,
-            distro: "ubuntu".into(),
-            distro_version: ubuntu_version.into(),
-            libc_version: info.ubuntu_libc_version.unwrap_or_else(|| "*".into()),
+            arch: Some(arch),
+            distro: Some("ubuntu"),
+            distro_version: Some(ubuntu_version),
+            libc_version: info.ubuntu_libc_version,
         }));
     }
     Ok(None)
+}
+
+pub fn merge_packages_variants(packages_variants: Vec<Packages>) -> Packages {
+    let mut packages = Packages::default();
+    for packages_variant in packages_variants {
+        packages.arch = packages.arch.or(packages_variant.arch);
+        packages.distro = packages.distro.or(packages_variant.distro);
+        packages.distro_version = packages.distro_version.or(packages_variant.distro_version);
+        packages.libc_version = packages.libc_version.or(packages_variant.libc_version);
+    }
+    packages
 }

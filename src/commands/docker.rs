@@ -70,15 +70,25 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
     let yml = "docker-compose.yml";
     match docker.subcmd {
         SubCommand::Init(_init) => {
-            let mut maybe_packages = None;
+            let mut packages_variants = vec![];
             for binary in &challenge.binaries {
+                println!("Analyzing {}...", binary.name);
                 let binary_path = challenge_dir.join(&binary.name);
                 if let Some(packages) = distro::get_packages(&binary_path)? {
-                    maybe_packages = Some(packages);
-                    break;
+                    println!("  Arch: {}", packages.arch.unwrap_or("?"));
+                    println!(
+                        "  Distro: {} {}",
+                        packages.distro.unwrap_or("?"),
+                        packages.distro_version.unwrap_or("?")
+                    );
+                    println!(
+                        "  Libc: {}",
+                        &packages.libc_version.as_deref().unwrap_or("?")
+                    );
+                    packages_variants.push(packages);
                 }
             }
-            let packages = maybe_packages.unwrap_or_default();
+            let packages = distro::merge_packages_variants(packages_variants);
             let image = challenge_dir.join("image");
             fs::create_dir_all(&image)?;
             fs::write(
@@ -93,18 +103,25 @@ pub async fn run(docker: Docker, current_dir: PathBuf) -> Result<()> {
             let mut args = serde_yaml::Mapping::new();
             args.insert(
                 serde_yaml::Value::String("arch".into()),
-                serde_yaml::Value::String(packages.arch.into()),
+                serde_yaml::Value::String(packages.arch.unwrap_or(distro::DEFAULT_ARCH).into()),
             );
             args.insert(
                 serde_yaml::Value::String("distro".into()),
                 serde_yaml::Value::String(format!(
                     "{}:{}",
-                    packages.distro, packages.distro_version
+                    packages.distro.unwrap_or(distro::DEFAULT_DISTRO),
+                    packages
+                        .distro_version
+                        .unwrap_or(distro::DEFAULT_DISTRO_VERSION)
                 )),
             );
             args.insert(
                 serde_yaml::Value::String("libc_version".into()),
-                serde_yaml::Value::String(packages.libc_version),
+                serde_yaml::Value::String(
+                    packages
+                        .libc_version
+                        .unwrap_or(distro::DEFAULT_LIBC_VERSION.into()),
+                ),
             );
             build.insert(
                 serde_yaml::Value::String("args".into()),
