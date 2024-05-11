@@ -33,7 +33,7 @@ challenge directory.
 
 `ctf service add NAME URL` adds a new service with the name `NAME` and URL `URL`.
 
-`ctf service set-url NAME URL` set the URL of the service `NAME` to `URL`.
+`ctf service set-url NAME URL` sets the URL of the service `NAME` to `URL`.
 
 `ctf service rm NAME` removes an existing service with the name `NAME`.
 
@@ -48,7 +48,7 @@ None.
 Alternative 1: it should be very easy to add or adjust support for CTF websites.
 
 Alternative 2: a remote engine for local directories should be added. Users can then manually put service descriptions
-into such directories (e.g. into `DIR/CHALLENGE/services/SERVICE`) and `ctf fetch` them.
+into such directories (e.g., into `DIR/CHALLENGE/services/SERVICE`) and `ctf fetch` them.
 
 # Prior art
 [prior-art]: #prior-art

@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Result};
 use elf::abi::{
-    EM_386, EM_AARCH64, EM_ALPHA, EM_ARM, EM_AVR32, EM_IA_64, EM_MIPS, EM_PARISC, EM_PPC, EM_PPC64,
-    EM_RISCV, EM_S390, EM_SH, EM_SPARC, EM_X86_64,
+    DF_1_PIE, DT_FLAGS_1, EM_386, EM_AARCH64, EM_ALPHA, EM_ARM, EM_AVR32, EM_IA_64, EM_MIPS,
+    EM_PARISC, EM_PPC, EM_PPC64, EM_RISCV, EM_S390, EM_SH, EM_SPARC, EM_X86_64,
 };
 use elf::endian::{AnyEndian, EndianParse};
 use elf::file::{Class, FileHeader};
@@ -42,12 +42,14 @@ fn try_regex_1(result: &mut Option<String>, regex: &Regex, bytes: &[u8]) -> Resu
 
 /// Various information extracted from a binary.
 #[derive(Default)]
-struct BinaryInfo {
-    ehdr: Option<FileHeader<AnyEndian>>,
-    debian_gcc_version: Option<String>,
-    debian_libc_version: Option<String>,
-    ubuntu_gcc_version: Option<String>,
-    ubuntu_libc_version: Option<String>,
+pub struct BinaryInfo {
+    pub ehdr: Option<FileHeader<AnyEndian>>,
+    pub is_pie: Option<bool>,
+    pub debian_gcc_version: Option<String>,
+    pub debian_libc_version: Option<String>,
+    pub ubuntu_gcc_version: Option<String>,
+    pub ubuntu_libc_version: Option<String>,
+    pub kernel_version: Option<String>,
 }
 
 lazy_static! {
@@ -59,14 +61,20 @@ lazy_static! {
     static ref UBUNTU_LIBC_REGEX: Regex =
         Regex::new(r"GNU C Library \(Ubuntu GLIBC (.+?)\)").unwrap();
     static ref UBUNTU_LDSO_REGEX: Regex = Regex::new(r"ld\.so \(Ubuntu GLIBC (.+?)\)").unwrap();
+    static ref KERNEL_REGEX: Regex = Regex::new(r"Linux version ([^ ]+)").unwrap();
 }
 
 impl BinaryInfo {
-    fn analyze(path: &PathBuf) -> Result<BinaryInfo> {
+    pub fn analyze(path: &PathBuf) -> Result<BinaryInfo> {
         let mut result = BinaryInfo::default();
         let bytes = fs::read(path)?;
         if let Ok(elf) = ElfBytes::<AnyEndian>::minimal_parse(&bytes) {
             result.ehdr = Some(elf.ehdr);
+            if let Ok(Some(dynamic)) = elf.dynamic() {
+                result.is_pie = Some(dynamic.iter().any(|_dyn| {
+                    _dyn.d_tag == DT_FLAGS_1 && (_dyn.clone().d_val() & (DF_1_PIE as u64)) != 0
+                }));
+            }
         }
         try_regex_1(&mut result.debian_gcc_version, &DEBIAN_GCC_REGEX, &bytes)?;
         try_regex_1(&mut result.debian_libc_version, &DEBIAN_LIBC_REGEX, &bytes)?;
@@ -74,6 +82,7 @@ impl BinaryInfo {
         try_regex_1(&mut result.ubuntu_gcc_version, &UBUNTU_GCC_REGEX, &bytes)?;
         try_regex_1(&mut result.ubuntu_libc_version, &UBUNTU_LIBC_REGEX, &bytes)?;
         try_regex_1(&mut result.ubuntu_libc_version, &UBUNTU_LDSO_REGEX, &bytes)?;
+        try_regex_1(&mut result.kernel_version, &KERNEL_REGEX, &bytes)?;
         Ok(result)
     }
 }

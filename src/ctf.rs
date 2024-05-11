@@ -165,6 +165,9 @@ fn ignore(ctf: &CTF) -> Vec<String> {
     for challenge in &ctf.challenges {
         result.push(format!("!/{}/image/Dockerfile", challenge.name));
         result.push(format!("!/{}/docker-compose.yml", challenge.name));
+        result.push(format!("!/{}/pwnit.py", challenge.name));
+        result.push(format!("!/{}/pwnit.c", challenge.name));
+        result.push(format!("!/{}/Makefile", challenge.name));
         for binary in &challenge.binaries {
             if binary.default_alternative.is_some() {
                 result.push(format!("!/{}/{}", challenge.name, binary.name));

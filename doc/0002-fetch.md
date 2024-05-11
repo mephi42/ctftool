@@ -14,7 +14,7 @@ In order to download challenges, one needs to know at which exact URLs they are 
 # Guide-level explanation
 [guide-level-explanation]: #guide-level-explanation
 
-Use `ctf fetch` to initially download challenge metadata or to update it (e.g. when new challenges are opened or
+Use `ctf fetch` to initially download challenge metadata or to update it (e.g., when new challenges are opened or
 existing ones are fixed).
 
 # Reference-level explanation
