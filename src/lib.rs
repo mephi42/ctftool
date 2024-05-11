@@ -60,6 +60,10 @@ enum SubCommand {
     /// Manages services
     #[clap(name = "service")]
     Service(commands::service::Service),
+
+    /// Manages exploits
+    #[clap(name = "exploit")]
+    Exploit(commands::exploit::Exploit),
 }
 
 pub async fn main<I, T>(args: I, current_dir: PathBuf) -> Result<()>
@@ -78,6 +82,7 @@ where
         SubCommand::Challenge(challenge) => commands::challenge::run(challenge, current_dir),
         SubCommand::Docker(docker) => commands::docker::run(docker, current_dir).await,
         SubCommand::Service(service) => commands::service::run(service, current_dir),
+        SubCommand::Exploit(exploit) => commands::exploit::run(exploit, current_dir),
     }
 }
 

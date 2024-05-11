@@ -39,7 +39,7 @@ following:
 * gef
 * glibc debuginfo and source code
 
-`docker-compose.yml` contains various configuration bits (e.g. X11 forwarding).
+`docker-compose.yml` contains various configuration bits (e.g., X11 forwarding).
 
 `ctf docker exec COMMAND [ARGS ...]` builds the image and starts the container, and then execs the specified command
 inside it.

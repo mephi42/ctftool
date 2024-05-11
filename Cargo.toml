@@ -24,6 +24,7 @@ serde = { version = "1.0.198", features = ["derive"] }
 serde_yaml = "0.9.34"
 sha2 = "0.10.8"
 time = "0.3.36"
+tinytemplate = "1.2.1"
 tokio = { version = "1.37.0", features = ["fs", "macros", "rt-multi-thread"] }
 url = "2.5.0"
 

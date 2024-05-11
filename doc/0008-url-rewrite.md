@@ -9,7 +9,7 @@
 # Motivation
 [motivation]: #motivation
 
-Testability. Challenges may contain e.g. Google Drive URLs, which may be handled by the code in a special way, but
+Testability. Challenges may contain, e.g., Google Drive URLs, which may be handled by the code in a special way, but
 which should not be fetched during testing. By rewriting these URLs to point to a test HTTP server, this special
 handling can be verified without accessing external sites.
 

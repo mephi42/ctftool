@@ -45,7 +45,7 @@ None.
 
 `ctf checkout` could also detect whether downloaded binaries are packed, and unpack them (with varying levels of
 sophistication: `.gz`, `tar.gz`, `extract-vmlinux`, etc). However, the goal of `ctf checkout` is to let the user get the
-initial impression of the challenges (e.g. by doing `tar -t`, `binwalk`, etc., manually), so indiscriminate unpacking
+initial impression of the challenges (e.g., by doing `tar -t`, `binwalk`, etc., manually), so indiscriminate unpacking
 might be unnecessary. Therefore, it will be implemented separately.
 
 `ctf checkout` could also be taught to download single binaries, however, this is too fine-grained.
