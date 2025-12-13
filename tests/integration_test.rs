@@ -4,8 +4,7 @@ use std::fs::create_dir;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicI32, Ordering};
 
-use assert_cmd::cargo::cargo_bin;
-use assert_cmd::Command;
+use assert_cmd::cargo;
 use ctftool::{ctf, git};
 use hyper::server::Server;
 use hyper::service::{make_service_fn, service_fn};
@@ -35,7 +34,7 @@ impl WorkDir {
 fn test_exe() -> Result<()> {
     ctftool::init_logging();
     let work_dir = WorkDir::new()?;
-    let mut command = Command::cargo_bin("ctf")?;
+    let mut command = cargo::cargo_bin_cmd!("ctf");
     command
         .args(&["init"])
         .current_dir(work_dir.to_path_buf())
@@ -159,7 +158,7 @@ impl StaticServer {
 }
 
 async fn test_fetch(engine: &str) -> Result<()> {
-    let mut root = cargo_bin("ctf");
+    let mut root = PathBuf::from(cargo::cargo_bin!("ctf"));
     root.pop();
     root.pop();
     root.pop();

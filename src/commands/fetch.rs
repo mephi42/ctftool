@@ -23,7 +23,7 @@ pub async fn run(fetch: Fetch, current_dir: PathBuf) -> Result<()> {
     let mut cookie_store = CookieStore::default();
     for remote_credentials in &context.credentials.remotes {
         if remote_credentials.name == fetch.name {
-            cookie_store = CookieStore::load_json(remote_credentials.cookies.as_bytes())
+            cookie_store = cookie_store::serde::json::load(remote_credentials.cookies.as_bytes())
                 .map_err(|_| anyhow!("Could not load cookies"))?;
             break;
         }

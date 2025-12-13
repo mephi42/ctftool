@@ -33,8 +33,7 @@ pub async fn run(login: Login, current_dir: PathBuf) -> Result<()> {
     let engine = engines::get_engine(&remote.engine)?;
     let cookie_store = engine.login(&client, remote, &username, &password).await?;
     let mut cookies = Vec::new();
-    cookie_store
-        .save_json(&mut cookies)
+    cookie_store::serde::json::save(&cookie_store, &mut cookies)
         .map_err(|_| anyhow!("Could not save cookies"))?;
     let message = &format!("Log into {}", login.name);
     ctf::set_cookies(
