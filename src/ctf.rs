@@ -262,11 +262,11 @@ pub fn sanitize_title(title: &str) -> String {
 
 pub fn binary_from_url(url: &str) -> Result<Binary> {
     let parsed = Url::parse(url)?;
-    let path_segments = parsed
+    let mut path_segments = parsed
         .path_segments()
         .ok_or_else(|| anyhow!("cannot be base"))?;
     let name = path_segments
-        .last()
+        .next_back()
         .ok_or_else(|| anyhow!("cannot be empty"))?;
     Ok(Binary {
         name: name.into(),
@@ -301,6 +301,7 @@ fn extract_google_drive_id(url: &str) -> Result<Option<String>> {
 async fn resolve_google_drive_binary(client: &http::Client, id: &str) -> Result<Binary> {
     let initial_url = format!("https://drive.google.com/uc?export=download&id={}", id);
     let mut url = initial_url.clone();
+    let content_disposition_regex = Regex::new(r#"^attachment;filename="([^"]+)";"#)?;
     loop {
         let response = client.execute(client.get(&url).build()?).await?;
         if response.status() == 302 {
@@ -318,7 +319,6 @@ async fn resolve_google_drive_binary(client: &http::Client, id: &str) -> Result<
             Some(location) => location.to_str()?,
             None => bail!("No Content-Disposition"),
         };
-        let content_disposition_regex = Regex::new(r#"^attachment;filename="([^"]+)";"#)?;
         if let Some(file_name) = content_disposition_regex
             .captures(content_disposition)
             .map(|cap| cap[1].to_string())

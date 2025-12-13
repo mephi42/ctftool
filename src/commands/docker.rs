@@ -53,7 +53,7 @@ fn get_mapping<'a>(
     key: &str,
 ) -> Result<&'a mut serde_yaml::Mapping> {
     mapping
-        .get_mut(&serde_yaml::Value::String(key.into()))
+        .get_mut(serde_yaml::Value::String(key.into()))
         .ok_or_else(|| anyhow!("Missing \"{}\"", key))?
         .as_mapping_mut()
         .ok_or_else(|| anyhow!("\"{}\" is not a mapping", key))
