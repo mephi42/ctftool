@@ -172,6 +172,8 @@ fn get_ubuntu_versions_by_gcc_version(gcc_version: &str) -> &'static [&'static s
         &["22.04"]
     } else if gcc_version.starts_with("12.") {
         &["22.10", "23.04"]
+    } else if gcc_version.starts_with("13.") {
+        &["24.04"]
     } else {
         &[]
     }
@@ -202,6 +204,8 @@ fn get_ubuntu_versions_by_libc_version(libc_version: &str) -> &'static [&'static
         &["22.10"]
     } else if libc_version.starts_with("2.37-") {
         &["23.04"]
+    } else if libc_version.starts_with("2.39-") {
+        &["24.04"]
     } else {
         &[]
     }
